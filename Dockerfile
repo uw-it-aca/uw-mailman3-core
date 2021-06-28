@@ -10,6 +10,10 @@ RUN apt-get update -y && \
     python-setuptools \
     python3.6-dev \
     python3-venv \
+    libpq-dev \
+    curl \
+# just to get things going
+#    postgresql \
     postfix
 
 RUN locale-gen en_US.UTF-8
@@ -25,8 +29,17 @@ RUN groupadd -r acait -g 1000 && \
     chown -R acait:acait /app && \
     chown -R acait:acait /home/acait
 
+# if these don't really need to be in /etc/ then move them to /app
+COPY etc/mailman.cfg /etc/
+COPY etc/mailman-hyperkitty.cfg /etc/
+COPY etc/postfix-mailman.cfg /etc
+COPY etc/gunicorn.cfg /etc
+
 USER acait
+ADD --chown=acait:acait database/ database/
 RUN /app/bin/pip install -U setuptools
+RUN /app/bin/pip install wheel
+RUN /app/bin/pip install psycopg2
 RUN /app/bin/pip install mailman
 
 CMD /bin/bash
