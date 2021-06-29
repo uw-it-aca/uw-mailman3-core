@@ -12,9 +12,9 @@ RUN apt-get update -y && \
     python3-venv \
     libpq-dev \
     curl \
+    postfix
 # just to get things going
 #    postgresql \
-    postfix
 
 RUN locale-gen en_US.UTF-8
 # locale.getdefaultlocale() searches in this order
@@ -42,4 +42,6 @@ RUN /app/bin/pip install wheel
 RUN /app/bin/pip install psycopg2
 RUN /app/bin/pip install mailman
 
+USER root
 CMD /bin/bash
+#CMD ["bin/master", "--force"]
