@@ -43,5 +43,5 @@ RUN /app/bin/pip install psycopg2
 RUN /app/bin/pip install mailman
 
 USER root
-CMD /bin/bash
-#CMD ["bin/master", "--force"]
+#CMD /bin/bash
+CMD ["bin/master", "--force"]
