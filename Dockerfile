@@ -36,7 +36,7 @@ COPY etc/postfix-mailman.cfg /etc
 COPY etc/gunicorn.cfg /etc
 
 USER acait
-ADD --chown=acait:acait database/ database/
+RUN mkdir -p database && chown acait:acait database
 RUN /app/bin/pip install -U setuptools
 RUN /app/bin/pip install wheel
 RUN /app/bin/pip install psycopg2
