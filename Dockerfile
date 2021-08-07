@@ -35,13 +35,15 @@ COPY etc/mailman-hyperkitty.cfg /etc/
 COPY etc/postfix-mailman.cfg /etc
 COPY etc/gunicorn.cfg /etc
 
+RUN /bin/bash -c '/usr/sbin/postfix start'
+
 USER acait
 RUN mkdir -p database && chown acait:acait database
 RUN /app/bin/pip install -U setuptools
 RUN /app/bin/pip install wheel
 RUN /app/bin/pip install psycopg2
+RUN /app/bin/pip install mailman-hyperkitty
 RUN /app/bin/pip install mailman
 
 USER root
-#CMD /bin/bash
 CMD ["bin/master", "--force"]
