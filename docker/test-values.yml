@@ -1,0 +1,145 @@
+replicaCount: 1
+autoscaling:
+  enabled: false
+ingress:
+  enabled: true
+  type: nginx
+  tls:
+    test-mailman-core:
+      secretName: mailman-core-test.axdd.s.uw.edu-ingress-cert
+      hosts:
+        - mailman-core-test.axdd.s.uw.edu
+  hosts:
+    test-mailman-core:
+      host: mailman-core-test.axdd.s.uw.edu
+      paths:
+        - "/"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+securityPolicy:
+  enabled: true
+readiness:
+  enabled: true
+database:
+  engine: postgres
+  name: mailmandb-test
+  hostname: mailmain-core-db-test-service
+  secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
+externalService:
+  enabled: true
+  name: mailman-core-test-service
+  type: ClusterIP
+  serviceAddress: 172.18.1.XX
+  servicePort: 5432
+repo: mailman-core
+instance: test
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 25m
+    memory: 128Mi
+image:
+  repository: gcr.io/uwit-mci-axdd/mailman-core
+  tag: IMAGE_TAG
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+memcached:
+  enabled: true
+  replicaCount: 1
+cronjob:
+  enabled: true
+  jobs:
+    - name: expire-endorsees
+      schedule: "5 8 * * 1-5"
+      command: ["/scripts/management_command.sh"]
+      args: ["expire_endorsees"]
+    - name: expiration-notice-1
+      schedule: "10 8 * * 1-5"
+      command: ["/scripts/management_command.sh"]
+      args: ["expiration_notice", "1"]
+    - name: expiration-notice-2
+      schedule: "15 8 * * 1-5"
+      command: ["/scripts/management_command.sh"]
+      args: ["expiration_notice", "2"]
+    - name: expiration-notice-3
+      schedule: "20 8 * * 1-5"
+      command: ["/scripts/management_command.sh"]
+      args: ["expiration_notice", "3"]
+    - name: expiration-notice-4
+      schedule: "25 8 * * 1-5"
+      command:
+        - /scripts/management_command.sh
+      args:
+        - expiration_notice
+        - "4"
+daemon:
+  enabled: true
+  daemons:
+    - name: notify-endorsees
+      command: ["/scripts/management_daemon.sh"]
+      args: ['--cron', '*/5 * * * *', 'notify_endorsees']
+certs:
+  mounted: true
+  certPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.cert
+  keyPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.key
+  secretName: mailman-core-test.axdd.s.uw.edu-uwca-certs
+environmentVariables:
+  - name: ENV
+    value: dev
+  - name: DATABASE_DB_NAME
+    value: mailmandb-test
+  - name: MAILMAN_HOSTNAME
+    value: mailman-core-test
+externalSecrets:
+  enabled: true
+  secrets:
+    - name: mailman-core-test.axdd.s.uw.edu-secrets
+      externalKey: axdd/kv/data/mailman-core/test/secrets
+      data:
+        - name: mailman-admin-user
+          property: mailman-admin-user
+        - name: mailman-admin-password
+          property: mailman-admin-password
+        - name: mailman-site-owner
+          property: mailman-site-owner
+        - name: hyperkitty-api-key
+          property: hyperkitty-api-key
+        - name: smtp-host
+          property: smtp-host
+    - name: mailman-core-test.axdd.s.uw.edu-sql-secret
+      externalKey: axdd/kv/data/mailman-core/test/sql-secret
+      data:
+        - name: username
+          property: sql_user
+        - name: password
+          property: sql_pass
+    - name: mailman-core-test.axdd.s.uw.edu-ic-certs
+      externalKey: axdd/kv/data/mailman-core/test/ic-certs
+      data:
+        - name: mailman-core-test.axdd.s.uw.edu.cert
+          property: cert
+environmentVariablesSecrets:
+  mailmanAdminUser:
+    name: MAILMAN_ADMIN_USER
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-admin-user
+  mailmanAdminPassword:
+    name: MAILMAN_ADMIN_PASSWORD
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-admin-password
+  mailmanSiteOwner:
+    name: MAILMAN_SITE_OWNER
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-site-owner
+  smtpHostname:
+    name: SMTP_HOST
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: smtp-host
+  hyperkittyAPIKey:
+    name: HYPERKITTY_API_KEY
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: hyperkitty-api-key

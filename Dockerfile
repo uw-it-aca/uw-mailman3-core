@@ -12,9 +12,8 @@ RUN apt-get update -y && \
     python3-venv \
     libpq-dev \
     curl \
-    postfix
-# just to get things going
-#    postgresql \
+    postfix \
+    postgresql
 
 RUN locale-gen en_US.UTF-8
 # locale.getdefaultlocale() searches in this order
@@ -29,21 +28,25 @@ RUN groupadd -r acait -g 1000 && \
     chown -R acait:acait /app && \
     chown -R acait:acait /home/acait
 
-# if these don't really need to be in /etc/ then move them to /app
-COPY etc/mailman.cfg /etc/
-COPY etc/mailman-hyperkitty.cfg /etc/
-COPY etc/postfix-mailman.cfg /etc
-COPY etc/gunicorn.cfg /etc
+ADD scripts /scripts
 
-RUN /bin/bash -c '/usr/sbin/postfix start'
+## if these don't really need to be in /etc/ then move them to /app
+# these are copied into place via script/start.sh
+#COPY etc/mailman.cfg /etc/
+#COPY etc/mailman-hyperkitty.cfg /etc/
+#COPY etc/postfix-mailman.cfg /etc
+#COPY etc/gunicorn.cfg /etc
 
 USER acait
 RUN mkdir -p database && chown acait:acait database
-RUN /app/bin/pip install -U setuptools
-RUN /app/bin/pip install wheel
-RUN /app/bin/pip install psycopg2
-RUN /app/bin/pip install mailman-hyperkitty
-RUN /app/bin/pip install mailman
+RUN python3 -m pip install -U pip setuptools wheel \
+    && python3 -m pip install psycopg2 \
+            gunicorn==19.9.0 \
+            mailman==3.3.4 \
+            mailman-hyperkitty==1.1.0
+
+ENV MAILMAN_CONFIG_FILE /etc/mailman.cfg
 
 USER root
-CMD ["bin/master", "--force"]
+
+CMD ["scripts/start.sh"]
