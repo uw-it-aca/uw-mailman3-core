@@ -40,6 +40,15 @@ resources:
   requests:
     cpu: 25m
     memory: 128Mi
+persistentVolume:
+  enabled: true
+  claims:
+    - name: var-spool-mailman
+      mountPath: /var/spool/mailman
+      storageSize: 10Gi
+    - name: var-spool-postfix
+      mountPath: /var/spool/postfix
+      storageSize: 10Gi
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
