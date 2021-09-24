@@ -59,7 +59,7 @@ persistentVolume:
     - name: var-mailman
       accessModes:
         - ReadWriteOnce
-      mountPath: /var/mm3
+      mountPath: /var/mailman3
       storageSize: 3Gi
     - name: var-spool-postfix
       accessModes:
