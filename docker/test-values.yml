@@ -1,4 +1,17 @@
 replicaCount: 1
+statefulset:
+  enabled: true
+deployment:
+  enabled: false
+containerPorts:
+  enabled: true
+  ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+    - name: smtp
+      containerPort: 25
+      protocol: TCP
 autoscaling:
   enabled: false
 ingress:
@@ -22,14 +35,14 @@ readiness:
   enabled: true
 database:
   engine: postgres
-  name: mailmandb-test
+  name: mailmandb
   hostname: mailmain-core-db-test-service
   secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
 externalService:
   enabled: true
   name: mailman-core-test-service
   type: ClusterIP
-  serviceAddress: 172.18.1.XX
+  serviceAddress: 172.18.1.64
   servicePort: 5432
 repo: mailman-core
 instance: test
@@ -42,55 +55,25 @@ resources:
     memory: 128Mi
 persistentVolume:
   enabled: true
-  claims:
-    - name: var-spool-mailman
-      mountPath: /var/spool/mailman
-      storageSize: 10Gi
+  claimTemplates:
+    - name: var-mailman
+      accessModes:
+        - ReadWriteOnce
+      mountPath: /var/mm3
+      storageSize: 3Gi
     - name: var-spool-postfix
+      accessModes:
+        - ReadWriteOnce
       mountPath: /var/spool/postfix
-      storageSize: 10Gi
+      storageSize: 3Gi
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
 metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: true
+  enabled: false
 memcached:
   enabled: true
   replicaCount: 1
-cronjob:
-  enabled: true
-  jobs:
-    - name: expire-endorsees
-      schedule: "5 8 * * 1-5"
-      command: ["/scripts/management_command.sh"]
-      args: ["expire_endorsees"]
-    - name: expiration-notice-1
-      schedule: "10 8 * * 1-5"
-      command: ["/scripts/management_command.sh"]
-      args: ["expiration_notice", "1"]
-    - name: expiration-notice-2
-      schedule: "15 8 * * 1-5"
-      command: ["/scripts/management_command.sh"]
-      args: ["expiration_notice", "2"]
-    - name: expiration-notice-3
-      schedule: "20 8 * * 1-5"
-      command: ["/scripts/management_command.sh"]
-      args: ["expiration_notice", "3"]
-    - name: expiration-notice-4
-      schedule: "25 8 * * 1-5"
-      command:
-        - /scripts/management_command.sh
-      args:
-        - expiration_notice
-        - "4"
-daemon:
-  enabled: true
-  daemons:
-    - name: notify-endorsees
-      command: ["/scripts/management_daemon.sh"]
-      args: ['--cron', '*/5 * * * *', 'notify_endorsees']
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.cert
@@ -100,7 +83,7 @@ environmentVariables:
   - name: ENV
     value: dev
   - name: DATABASE_DB_NAME
-    value: mailmandb-test
+    value: mailmandb
   - name: MAILMAN_HOSTNAME
     value: mailman-core-test
 externalSecrets:
