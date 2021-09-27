@@ -49,10 +49,10 @@ instance: test
 resources:
   limits:
     cpu: 500m
-    memory: 512Mi
+    memory: 1Gi
   requests:
-    cpu: 25m
-    memory: 128Mi
+    cpu: 50m
+    memory: 256Mi
 persistentVolume:
   enabled: true
   claimTemplates:
@@ -72,8 +72,7 @@ image:
 metrics:
   enabled: false
 memcached:
-  enabled: true
-  replicaCount: 1
+  enabled: false
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.cert

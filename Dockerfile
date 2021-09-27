@@ -22,29 +22,29 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-RUN python3 -m venv /app/
-RUN groupadd -r acait -g 1000 && \
-    useradd -u 1000 -rm -g acait -d /home/acait -s /bin/bash -c "container user" acait && \
-    chown -R acait:acait /app && \
-    chown -R acait:acait /home/acait
-
-ADD scripts /scripts
-
 ## if these don't really need to be in /etc/ then move them to /app
 # these are copied into place via script/start.sh
 #COPY etc/mailman.cfg /etc/
 #COPY etc/mailman-hyperkitty.cfg /etc/
 #COPY etc/postfix-mailman.cfg /etc
 #COPY etc/gunicorn.cfg /etc
+ADD scripts /scripts
+
+RUN python3 -m venv /app/
+RUN groupadd -r acait -g 1000 && \
+    useradd -u 1000 -rm -g acait -d /home/acait -s /bin/bash -c "container user" acait && \
+    chown -R acait:acait /app && \
+    chown -R acait:acait /home/acait
 
 USER acait
 RUN mkdir -p database && chown acait:acait database
-RUN python3 -m pip install -U pip setuptools wheel \
-    && python3 -m pip install psycopg2 \
-            gunicorn==19.9.0 \
-            mailman==3.3.4 \
-            mailman-hyperkitty==1.1.0
+ADD --chown=acait:acait requirements.txt /app/
 
+RUN . /app/bin/activate && \
+    pip install pip setuptools && \
+    pip install -r requirements.txt
+
+ENV PORT 8000
 ENV MAILMAN_CONFIG_FILE /etc/mailman.cfg
 
 USER root

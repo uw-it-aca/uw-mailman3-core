@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## copy config files into place inserting secrets as we go
+## copy config files into place inserting secrets
 CONFIG_FILE_DIRECTORY=/etc
 for CFG_FILE_IN in $(echo etc/*.cfg)
 do
@@ -13,10 +13,10 @@ do
 done
 
 
-## do any housekeeping or clean up here
+## do any housekeeping or clean up
 
 # Chown the places where mailman wants to write stuff.
-chown -R mailman /opt/mailman
+chown -R acait:acait /var/mailman3
 
 ## Generate the LMTP files for postfix if needed.
 #su-exec mailman mailman aliases
