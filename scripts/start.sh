@@ -19,7 +19,7 @@ done
 # Chown the places where mailman wants to write stuff.
 chown -R mailman:mailman /opt/mailman
 
-source "/app/bin/activate"
+source "/opt/mailman/venv/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
 su-exec mailman mailman aliases

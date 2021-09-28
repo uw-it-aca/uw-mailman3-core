@@ -33,13 +33,14 @@ ENV LANG en_US.UTF-8
 ADD requirements.txt /app/
 ADD scripts /scripts
 
-RUN python3 -m venv /app/
 RUN groupadd -r mailman -g 1000 && \
     useradd -u 1000 -m -d /opt/mailman -s /bin/bash -g mailman mailman && \
-    chown -R mailman:mailman /app && \
+    chown -R mailman:mailman /app /opt/mailman && \
     chown -R mailman:mailman requirements.txt /opt/mailman
 
-RUN . /app/bin/activate && \
+RUN python3 -m venv /opt/mailman/venv
+
+RUN . /opt/mailman/venv/bin/activate && \
     pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
 
