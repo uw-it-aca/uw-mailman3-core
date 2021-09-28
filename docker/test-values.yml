@@ -35,7 +35,7 @@ readiness:
   enabled: true
 database:
   engine: postgres
-  name: mailmandb
+  name: mailman
   hostname: mailmain-core-db-test-service
   secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
 externalService:
@@ -59,7 +59,7 @@ persistentVolume:
     - name: var-mailman
       accessModes:
         - ReadWriteOnce
-      mountPath: /var/mailman3
+      mountPath: /opt/mailman
       storageSize: 10Gi
     - name: var-spool-postfix
       accessModes:
@@ -82,7 +82,7 @@ environmentVariables:
   - name: ENV
     value: dev
   - name: DATABASE_DB_NAME
-    value: mailmandb
+    value: mailman
   - name: MAILMAN_HOSTNAME
     value: mailman-core-test
 externalSecrets:

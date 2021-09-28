@@ -15,11 +15,14 @@ done
 
 ## do any housekeeping or clean up
 
-# Chown the places where mailman wants to write stuff.
-chown -R acait:acait /var/mailman3
 
-## Generate the LMTP files for postfix if needed.
-#su-exec mailman mailman aliases
+# Chown the places where mailman wants to write stuff.
+chown -R mailman:mailman /opt/mailman
+
+source "/app/bin/activate"
+
+# Generate the LMTP files for postfix if needed.
+su-exec mailman mailman aliases
 
 ## spin up postfix
 #/usr/sbin/postfix start

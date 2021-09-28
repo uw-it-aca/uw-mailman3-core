@@ -8,8 +8,10 @@ RUN apt-get update -y && \
     locales \
     gcc \
     python-setuptools \
-    python3.6-dev \
+    python3-dev \
     python3-venv \
+    sassc \
+    lynx \
     libpq-dev \
     curl \
     postfix \
@@ -28,25 +30,22 @@ ENV LANG en_US.UTF-8
 #COPY etc/mailman-hyperkitty.cfg /etc/
 #COPY etc/postfix-mailman.cfg /etc
 #COPY etc/gunicorn.cfg /etc
+ADD requirements.txt /app/
 ADD scripts /scripts
 
 RUN python3 -m venv /app/
-RUN groupadd -r acait -g 1000 && \
-    useradd -u 1000 -rm -g acait -d /home/acait -s /bin/bash -c "container user" acait && \
-    chown -R acait:acait /app && \
-    chown -R acait:acait /home/acait
-
-USER acait
-RUN mkdir -p database && chown acait:acait database
-ADD --chown=acait:acait requirements.txt /app/
+RUN groupadd -r mailman -g 1000 && \
+    useradd -u 1000 -m -d /opt/mailman -s /bin/bash -g mailman mailman && \
+    chown -R mailman:mailman /app && \
+    chown -R mailman:mailman requirements.txt /opt/mailman
 
 RUN . /app/bin/activate && \
-    pip install pip setuptools && \
+    pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
 
 ENV PORT 8000
 ENV MAILMAN_CONFIG_FILE /etc/mailman.cfg
 
-USER root
+USER mailman
 
 CMD ["scripts/start.sh"]
