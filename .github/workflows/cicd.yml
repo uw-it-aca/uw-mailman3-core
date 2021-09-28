@@ -50,7 +50,7 @@ jobs:
       - name: Build App Image
         uses: docker/build-push-action@v2
         with:
-          target: app-container
+          target: uw-mailman-core
           tags: ${{ needs.context.outputs.image_tag }}
           push: false
           load: true
