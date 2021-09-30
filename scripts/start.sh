@@ -1,8 +1,23 @@
 #!/bin/bash
+set -e
+
+# setup database for the provided environment
+if [ "$ENV" = "localdev" ]
+then
+    mkdir /app/database
+    chown mailman:mailman /app/database
+    export DATABASE_CLASS=""
+    export DATABASE_URL="url: sqlite:////app/database/sqlite.db"
+else
+    # url: postgres://mailman:mailmanpass@database/mailman
+    export DATABASE_CLASS="class: mailman.database.postgresql.PostgreSQLDatabase"
+    export DATABASE_URL="url: postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
+fi
 
 ## copy config files into place inserting secrets
-CONFIG_FILE_DIRECTORY=/etc
-for CFG_FILE_IN in $(echo etc/*.cfg)
+CONFIG_FILE_DIRECTORY=/opt/mailman/venv/etc
+mkdir -p $CONFIG_FILE_DIRECTORY
+for CFG_FILE_IN in $(echo /app/etc/*.cfg)
 do
     awk '{
            while (match($0,"[$]{[^}]*}")) {
@@ -12,20 +27,19 @@ do
          }1' < $CFG_FILE_IN  > ${CONFIG_FILE_DIRECTORY}/$(basename $CFG_FILE_IN)
 done
 
-
 ## do any housekeeping or clean up
 
 
 # Chown the places where mailman wants to write stuff.
-chown -R mailman:mailman /opt/mailman
+#chown -R mailman:mailman /opt/mailman
 
 source "/opt/mailman/venv/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
-su-exec mailman mailman aliases
+# /opt/mailman/venv/bin/mailman aliases
 
 ## spin up postfix
-#/usr/sbin/postfix start
+# su-exec root /usr/sbin/postfix start
 
 ## launch mailman
-#su-exec mailman master --force
+/opt/mailman/venv/bin/master --force

@@ -40,7 +40,7 @@ database:
   secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
 externalService:
   enabled: true
-  name: mailman-core-test-service
+  name: mailmain-core-db-test-service
   type: ClusterIP
   serviceAddress: 172.18.1.64
   servicePort: 5432
@@ -81,10 +81,12 @@ certs:
 environmentVariables:
   - name: ENV
     value: dev
+  - name: DATABASE_HOSTNAME
+    value: "mailmain-core-db-test-service"
   - name: DATABASE_DB_NAME
-    value: mailman
+    value: "mailman"
   - name: MAILMAN_HOSTNAME
-    value: mailman-core-test
+    value: "mailman-core-test"
 externalSecrets:
   enabled: true
   secrets:

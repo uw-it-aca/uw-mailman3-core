@@ -26,27 +26,26 @@ ENV LANG en_US.UTF-8
 
 ## if these don't really need to be in /etc/ then move them to /app
 # these are copied into place via script/start.sh
-#COPY etc/mailman.cfg /etc/
-#COPY etc/mailman-hyperkitty.cfg /etc/
-#COPY etc/postfix-mailman.cfg /etc
-#COPY etc/gunicorn.cfg /etc
+ADD etc/ /app/etc
 ADD requirements.txt /app/
 ADD scripts /scripts
 
 RUN groupadd -r mailman -g 1000 && \
-    useradd -u 1000 -m -d /opt/mailman -s /bin/bash -g mailman mailman && \
-    chown -R mailman:mailman /app /opt/mailman && \
-    chown -R mailman:mailman requirements.txt /opt/mailman
+    useradd -u 1000 -m -d /opt/mailman -s /bin/bash -g mailman mailman
 
 RUN python3 -m venv /opt/mailman/venv
+
+RUN chown -R mailman:mailman /app /opt/mailman && \
+    chown -R mailman:mailman requirements.txt && \
+    chmod -R +x /scripts
 
 RUN . /opt/mailman/venv/bin/activate && \
     pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
 
 ENV PORT 8000
-ENV MAILMAN_CONFIG_FILE /etc/mailman.cfg
+ENV MAILMAN_CONFIG_FILE /opt/mailman/venv/etc/mailman.cfg
 
 USER mailman
 
-CMD ["scripts/start.sh"]
+CMD ["/scripts/start.sh"]
