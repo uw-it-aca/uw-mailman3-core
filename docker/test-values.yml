@@ -36,7 +36,7 @@ readiness:
 database:
   engine: postgres
   name: mailman
-  hostname: mailmain-core-db-test-service
+  hostname: mailman-core-db-test-service
   secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
 externalService:
   enabled: true
@@ -82,7 +82,7 @@ environmentVariables:
   - name: ENV
     value: dev
   - name: DATABASE_HOSTNAME
-    value: "mailmain-core-db-test-service"
+    value: "mailman-core-db-test-service"
   - name: DATABASE_DB_NAME
     value: "mailman"
   - name: MAILMAN_HOSTNAME
@@ -110,11 +110,6 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
-    - name: mailman-core-test.axdd.s.uw.edu-ic-certs
-      externalKey: axdd/kv/data/mailman-core/test/ic-certs
-      data:
-        - name: mailman-core-test.axdd.s.uw.edu.cert
-          property: cert
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
