@@ -60,11 +60,13 @@ persistentVolume:
       accessModes:
         - ReadWriteOnce
       mountPath: /opt/mailman
+      storageClassName: standard
       storageSize: 10Gi
     - name: var-spool-postfix
       accessModes:
         - ReadWriteOnce
       mountPath: /var/spool/postfix
+      storageClassName: standard
       storageSize: 3Gi
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
