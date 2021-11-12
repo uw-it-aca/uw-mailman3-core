@@ -1,0 +1,133 @@
+replicaCount: 1
+statefulset:
+  enabled: true
+deployment:
+  enabled: false
+containerPorts:
+  enabled: true
+  ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+    - name: smtp
+      containerPort: 25
+      protocol: TCP
+autoscaling:
+  enabled: false
+ingress:
+  enabled: true
+  type: nginx
+  tls:
+    test-mailman-core:
+      secretName: mailman-core-test.axdd.s.uw.edu-ingress-cert
+      hosts:
+        - mailman-core-test.axdd.s.uw.edu
+  hosts:
+    test-mailman-core:
+      host: mailman-core-test.axdd.s.uw.edu
+      paths:
+        - "/"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+securityPolicy:
+  enabled: true
+readiness:
+  enabled: true
+database:
+  engine: postgres
+  name: mailman
+  hostname: mailman-core-db-test-service
+  secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
+externalService:
+  enabled: true
+  name: mailmain-core-db-test-service
+  type: ClusterIP
+  serviceAddress: 172.18.1.64
+  servicePort: 5432
+repo: mailman-core
+instance: test
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+persistentVolume:
+  enabled: true
+  claimTemplates:
+    - name: var-mailman
+      accessModes:
+        - ReadWriteOnce
+      mountPath: /opt/mailman
+      storageSize: 10Gi
+    - name: var-spool-postfix
+      accessModes:
+        - ReadWriteOnce
+      mountPath: /var/spool/postfix
+      storageSize: 3Gi
+image:
+  repository: gcr.io/uwit-mci-axdd/mailman-core
+  tag: IMAGE_TAG
+metrics:
+  enabled: false
+memcached:
+  enabled: false
+certs:
+  mounted: true
+  certPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.cert
+  keyPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.key
+  secretName: mailman-core-test.axdd.s.uw.edu-uwca-certs
+environmentVariables:
+  - name: ENV
+    value: dev
+  - name: DATABASE_HOSTNAME
+    value: "mailman-core-db-test-service"
+  - name: DATABASE_DB_NAME
+    value: "mailman"
+  - name: MAILMAN_HOSTNAME
+    value: "mailman-core-test"
+externalSecrets:
+  enabled: true
+  secrets:
+    - name: mailman-core-test.axdd.s.uw.edu-secrets
+      externalKey: axdd/kv/data/mailman-core/test/secrets
+      data:
+        - name: mailman-admin-user
+          property: mailman-admin-user
+        - name: mailman-admin-password
+          property: mailman-admin-password
+        - name: mailman-site-owner
+          property: mailman-site-owner
+        - name: hyperkitty-api-key
+          property: hyperkitty-api-key
+        - name: smtp-host
+          property: smtp-host
+    - name: mailman-core-test.axdd.s.uw.edu-sql-secret
+      externalKey: axdd/kv/data/mailman-core/test/sql-secret
+      data:
+        - name: username
+          property: sql_user
+        - name: password
+          property: sql_pass
+environmentVariablesSecrets:
+  mailmanAdminUser:
+    name: MAILMAN_ADMIN_USER
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-admin-user
+  mailmanAdminPassword:
+    name: MAILMAN_ADMIN_PASSWORD
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-admin-password
+  mailmanSiteOwner:
+    name: MAILMAN_SITE_OWNER
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-site-owner
+  smtpHostname:
+    name: SMTP_HOST
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: smtp-host
+  hyperkittyAPIKey:
+    name: HYPERKITTY_API_KEY
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: hyperkitty-api-key

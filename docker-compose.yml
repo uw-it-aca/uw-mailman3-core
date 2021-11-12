@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    restart: always
+    container_name: uw-mailman3-core
+    build:
+      context: .
+    environment:
+      ENV: localdev
+      MAILMAN_HOSTNAME: 127.0.0.1
+      SMTP_HOST: 127.0.0.1
+      MAILMAN_ADMIN_USER: restadmin
+      MAILMAN_ADMIN_PASSWORD: restpass
+      MAILMAN_SITE_OWNER: javerage@uw.edu
+      HYPERKITTY_API_KEY: "someapikey"
