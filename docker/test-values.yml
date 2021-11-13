@@ -76,10 +76,7 @@ metrics:
 memcached:
   enabled: false
 certs:
-  mounted: true
-  certPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.cert
-  keyPath: /certs/mailman-core-test.axdd.s.uw.edu-uwca.key
-  secretName: mailman-core-test.axdd.s.uw.edu-uwca-certs
+  mounted: false
 environmentVariables:
   - name: ENV
     value: dev
