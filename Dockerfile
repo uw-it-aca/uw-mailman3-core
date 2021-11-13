@@ -35,8 +35,7 @@ RUN groupadd -r mailman -g 1000 && \
 
 RUN python3 -m venv /opt/mailman/venv
 
-RUN chown -R mailman:mailman /app /opt/mailman && \
-    chown -R mailman:mailman requirements.txt && \
+RUN chown -R mailman:mailman /app /opt/mailman requirements.txt && \
     chmod -R +x /scripts
 
 RUN . /opt/mailman/venv/bin/activate && \
