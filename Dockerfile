@@ -24,26 +24,29 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 ENV LANG en_US.UTF-8
 
+
+# create mailman directory, prep virtualenv
+RUN python3 -m venv /app/mailman
+
 ## if these don't really need to be in /etc/ then move them to /app
 # these are copied into place via script/start.sh
-ADD etc/ /app/etc
+ADD etc/ /app/conf
 ADD requirements.txt /app/
 ADD scripts /scripts
 
 RUN groupadd -r mailman -g 1000 && \
-    useradd -u 1000 -m -d /opt/mailman -s /bin/bash -g mailman mailman
+    useradd -u 1000 -m -d /app/mailman -s /bin/bash -g mailman mailman
 
-RUN python3 -m venv /opt/mailman/venv
-
-RUN chown -R mailman:mailman /app /opt/mailman requirements.txt && \
+RUN chown -R mailman:mailman /app /app/mailman requirements.txt && \
     chmod -R +x /scripts
 
-RUN . /opt/mailman/venv/bin/activate && \
+RUN . /app/mailman/bin/activate && \
     pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
 
 ENV PORT 8000
-ENV MAILMAN_CONFIG_FILE /opt/mailman/venv/etc/mailman.cfg
+ENV MAILMAN_CONFIG_FILE /app/mailman/etc/mailman.cfg
+ENV MAILMAN_VAR_DIR /app/mailman/var
 
 USER mailman
 
