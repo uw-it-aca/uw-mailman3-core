@@ -59,7 +59,7 @@ persistentVolume:
     - name: var-mailman
       accessModes:
         - ReadWriteOnce
-      mountPath: /opt/mailman/venv/var
+      mountPath: /app/mailman/var
       storageClassName: standard
       storageSize: 10Gi
     - name: var-spool-postfix

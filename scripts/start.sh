@@ -15,9 +15,9 @@ else
 fi
 
 ## copy config files into place inserting secrets
-CONFIG_FILE_DIRECTORY=/opt/mailman/venv/etc
+CONFIG_FILE_DIRECTORY=/app/mailman/etc
 mkdir -p $CONFIG_FILE_DIRECTORY
-for CFG_FILE_IN in $(echo /app/etc/*.cfg)
+for CFG_FILE_IN in $(echo /app/conf/*.cfg)
 do
     awk '{
            while (match($0,"[$]{[^}]*}")) {
@@ -31,15 +31,15 @@ done
 
 
 # Chown the places where mailman wants to write stuff.
-#chown -R mailman:mailman /opt/mailman
+#chown -R mailman:mailman /app/mailman
 
-source "/opt/mailman/venv/bin/activate"
+source "/app/mailman/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
-# /opt/mailman/venv/bin/mailman aliases
+# /app/mailman/bin/mailman aliases
 
 ## spin up postfix
 # su-exec root /usr/sbin/postfix start
 
 ## launch mailman
-/opt/mailman/venv/bin/master --force
+/app/mailman/bin/master --force
