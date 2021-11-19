@@ -2,4 +2,4 @@
 set -e
 
 # make sure pvc is mounted
-stat /opt/mailman &> /dev/null
+stat /app/mailman/var &> /dev/null
