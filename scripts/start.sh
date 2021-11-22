@@ -42,4 +42,4 @@ source "/app/mailman/bin/activate"
 # su-exec root /usr/sbin/postfix start
 
 ## launch mailman
-/app/mailman/bin/master --force
+/app/mailman/bin/master --force --verbose
