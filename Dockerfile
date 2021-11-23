@@ -45,7 +45,7 @@ RUN . /app/mailman/bin/activate && \
     pip install -r requirements.txt
 
 ENV PORT 8000
-ENV MAILMAN_CONFIG_FILE /app/mailman/etc/mailman.cfg
+ENV MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
 ENV MAILMAN_VAR_DIR /app/mailman/var
 
 USER mailman

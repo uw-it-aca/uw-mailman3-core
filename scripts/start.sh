@@ -15,7 +15,7 @@ else
 fi
 
 ## copy config files into place inserting secrets
-CONFIG_FILE_DIRECTORY=/app/mailman/etc
+CONFIG_FILE_DIRECTORY=/app/mailman/var/etc
 mkdir -p $CONFIG_FILE_DIRECTORY
 for CFG_FILE_IN in $(echo /app/conf/*.cfg)
 do
