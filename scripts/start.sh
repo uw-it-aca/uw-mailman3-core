@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# set dymically for test/prod
+export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
+
 # setup database for the provided environment
 if [ "$ENV" = "localdev" ]
 then
