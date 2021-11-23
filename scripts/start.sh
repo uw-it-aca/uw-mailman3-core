@@ -35,6 +35,9 @@ done
 
 source "/app/mailman/bin/activate"
 
+# set dymically for test/prod
+export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
+
 # Generate the LMTP files for postfix if needed.
 # /app/mailman/bin/mailman aliases
 

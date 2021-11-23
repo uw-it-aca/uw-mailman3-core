@@ -84,8 +84,6 @@ environmentVariables:
     value: "mailman-core-db-test-service"
   - name: DATABASE_DB_NAME
     value: "mailman"
-  - name: MAILMAN_HOSTNAME
-    value: "mailman-core-test"
 externalSecrets:
   enabled: true
   secrets:
