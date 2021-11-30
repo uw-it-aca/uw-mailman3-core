@@ -87,21 +87,24 @@ environmentVariables:
 externalSecrets:
   enabled: true
   secrets:
-    - name: mailman-core-test.axdd.s.uw.edu-secrets
-      externalKey: axdd/kv/data/mailman-core/test/secrets
+    - name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+      externalKey: axdd/kv/data/mailman/shared/test/secrets
       data:
         - name: mailman-admin-user
           property: mailman-admin-user
         - name: mailman-admin-password
           property: mailman-admin-password
-        - name: mailman-site-owner
-          property: mailman-site-owner
         - name: hyperkitty-api-key
           property: hyperkitty-api-key
+    - name: mailman-core-test.axdd.s.uw.edu-secrets
+      externalKey: axdd/kv/data/mailman/core/test/secrets
+      data:
+        - name: mailman-site-owner
+          property: mailman-site-owner
         - name: smtp-host
           property: smtp-host
     - name: mailman-core-test.axdd.s.uw.edu-sql-secret
-      externalKey: axdd/kv/data/mailman-core/test/sql-secret
+      externalKey: axdd/kv/data/mailman/core/test/sql-secret
       data:
         - name: username
           property: sql_user
@@ -110,12 +113,16 @@ externalSecrets:
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
-    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
     secretKey: mailman-admin-user
   mailmanAdminPassword:
     name: MAILMAN_ADMIN_PASSWORD
-    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
     secretKey: mailman-admin-password
+  hyperkittyAPIKey:
+    name: HYPERKITTY_API_KEY
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretKey: hyperkitty-api-key
   mailmanSiteOwner:
     name: MAILMAN_SITE_OWNER
     secretName: mailman-core-test.axdd.s.uw.edu-secrets
@@ -124,7 +131,3 @@ environmentVariablesSecrets:
     name: SMTP_HOST
     secretName: mailman-core-test.axdd.s.uw.edu-secrets
     secretKey: smtp-host
-  hyperkittyAPIKey:
-    name: HYPERKITTY_API_KEY
-    secretName: mailman-core-test.axdd.s.uw.edu-secrets
-    secretKey: hyperkitty-api-key
