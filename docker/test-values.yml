@@ -134,7 +134,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: gcr.io/uwit-mci-axdd/uw-postfix:latest
+    image: gcr.io/uwit-mci-axdd/uw-postfix
     volumeMounts:
       - mountPath: /var/spool/postfix
         name: mailman-core-prod-test-pvc-var-spool-postfix
