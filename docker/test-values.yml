@@ -145,7 +145,7 @@ sidecarContainers:
         subPath: main.cf
     resources:
       limits:
-        cpu: 500m
+        cpu: 550m
         memory: 500Mi
       requests:
         cpu: 50m
