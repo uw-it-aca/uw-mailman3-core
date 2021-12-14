@@ -68,10 +68,6 @@ persistentVolume:
       mountPath: /var/spool/postfix
       storageClassName: standard
       storageSize: 3Gi
-podVolumes:
-  - name: config-volume
-    configMap:
-      name: mailman-core-prod-test-configmap-main-cf
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
@@ -79,6 +75,10 @@ metrics:
   enabled: false
 memcached:
   enabled: false
+podVolumes:
+  config-volume:
+    configMap:
+      name: mailman-core-prod-test-configmap-main-cf
 certs:
   mounted: false
 environmentVariables:
