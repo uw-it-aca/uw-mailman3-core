@@ -30,7 +30,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
 securityPolicy:
-  enabled: true
+  enabled: false
 readiness:
   enabled: true
 database:
@@ -68,6 +68,10 @@ persistentVolume:
       mountPath: /var/spool/postfix
       storageClassName: standard
       storageSize: 3Gi
+podVolumes:
+  - name: config-volume
+    configMap:
+      name: mailman-core-prod-test-configmap-main-cf
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
@@ -80,10 +84,6 @@ certs:
 environmentVariables:
   - name: ENV
     value: dev
-  - name: DATABASE_HOSTNAME
-    value: "mailman-core-db-test-service"
-  - name: DATABASE_DB_NAME
-    value: "mailman"
 externalSecrets:
   enabled: true
   secrets:
@@ -131,3 +131,65 @@ environmentVariablesSecrets:
     name: SMTP_HOST
     secretName: mailman-core-test.axdd.s.uw.edu-secrets
     secretKey: smtp-host
+
+sidecarContainers:
+  postfix:
+    image: gcr.io/uwit-mci-axdd/uw-postfix:latest
+    volumeMounts:
+      - mountPath: /var/spool/postfix
+        name: mailman-core-prod-test-pvc-var-spool-postfix
+      - mountPath: /app/mailman/var
+        name: mailman-core-prod-test-pvc-var-mailman
+      - name: config-volume
+        mountPath: /config/main.cf
+        subPath: main.cf
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+#  port25forwarder:
+#    image: kroniak/ssh-client
+#    env:
+#     - name: DJANGO_SECRET
+#       valueFrom:
+#         secretKeyRef:
+#           key: 
+#           name: uw-postfix-secrets
+#    command:
+#      - "sh"
+#      - "-c"
+#      - "echo ${SSH_ID_KEY} > ~/.ssh/id_rsa ; ssh ${SSH_ID}@${SSH_HOST} -N -L 25:${SMTP_RELAY}:25"
+
+configmaps:
+  main-cf:
+    main.cf: |
+      myhostname: mailman-core-prod-test
+      mail_name: Mailman POC
+      relayhost: smtp.uw.edu
+      mail_owner: postfix
+      setgid_group: postdrop
+      maillog_file: /dev/stdout
+      smtpd_banner: $myhostname ESMTP $mail_name (Ubuntu)
+      biff: no
+      queue_directory: /var/spool/postfix
+      data_directory: /var/lib/postfix
+      append_dot_mydomain: no
+      readme_directory: no
+      compatibility_level: 2
+      smtpd_tls_cert_file: /certs/ssl-cert-snakeoil.pem
+      smtpd_tls_key_file: /certs/ssl-cert-snakeoil.key
+      smtpd_use_tls: yes
+      smtpd_tls_session_cache_database: btree:${data_directory}/smtpd_scache
+      smtp_tls_session_cache_database: btree:${data_directory}/smtp_scache
+      smtpd_relay_restrictions: permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+      alias_maps: hash:/etc/aliases
+      alias_database: hash:/etc/aliases
+      mydestination: $myhostname, /etc/mailname, localhost, localhost.localdomain, localhost
+      mynetworks: 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+      mailbox_size_limit: 0
+      recipient_delimiter: +
+      inet_interfaces: all
+      inet_protocols: ipv4

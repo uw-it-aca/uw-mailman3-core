@@ -14,7 +14,6 @@ RUN apt-get update -y && \
     lynx \
     libpq-dev \
     curl \
-    postfix \
     postgresql
 
 RUN locale-gen en_US.UTF-8
@@ -47,6 +46,9 @@ RUN . /app/mailman/bin/activate && \
 ENV PORT 8000
 ENV MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
 ENV MAILMAN_VAR_DIR /app/mailman/var
+
+ADD certs certs
+RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
 
 USER mailman
 
