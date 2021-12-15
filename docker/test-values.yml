@@ -134,7 +134,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: "gcr.io/uwit-mci-axdd/uw-postfix:eb066d1"
+    image: "gcr.io/uwit-mci-axdd/uw-postfix:eeaaf25"
     volumeMounts:
       - mountPath: /var/spool/postfix
         name: mailman-core-prod-test-pvc-var-spool-postfix
@@ -166,30 +166,30 @@ sidecarContainers:
 configmaps:
   main-cf:
     main.cf: |
-      myhostname: mailman-core-prod-test
-      mail_name: Mailman POC
-      relayhost: smtp.uw.edu
-      mail_owner: postfix
-      setgid_group: postdrop
-      maillog_file: /dev/stdout
-      smtpd_banner: $myhostname ESMTP $mail_name (Ubuntu)
-      biff: no
-      queue_directory: /var/spool/postfix
-      data_directory: /var/lib/postfix
-      append_dot_mydomain: no
-      readme_directory: no
-      compatibility_level: 2
-      smtpd_tls_cert_file: /certs/ssl-cert-snakeoil.pem
-      smtpd_tls_key_file: /certs/ssl-cert-snakeoil.key
-      smtpd_use_tls: yes
-      smtpd_tls_session_cache_database: btree:${data_directory}/smtpd_scache
-      smtp_tls_session_cache_database: btree:${data_directory}/smtp_scache
-      smtpd_relay_restrictions: permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-      alias_maps: hash:/etc/aliases
-      alias_database: hash:/etc/aliases
-      mydestination: $myhostname, /etc/mailname, localhost, localhost.localdomain, localhost
-      mynetworks: 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
-      mailbox_size_limit: 0
-      recipient_delimiter: +
-      inet_interfaces: all
-      inet_protocols: ipv4
+      myhostname = mailman-core-prod-test
+      mail_name = Mailman POC
+      relayhost = smtp.uw.edu
+      mail_owner = postfix
+      setgid_group = postdrop
+      maillog_file = /dev/stdout
+      smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+      biff = no
+      queue_directory = /var/spool/postfix
+      data_directory = /var/lib/postfix
+      append_dot_mydomain = no
+      readme_directory = no
+      compatibility_level = 2
+      smtpd_tls_cert_file = /certs/ssl-cert-snakeoil.pem
+      smtpd_tls_key_file = /certs/ssl-cert-snakeoil.key
+      smtpd_use_tls = yes
+      smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+      smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+      smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+      alias_maps = hash:/etc/aliases
+      alias_database = hash:/etc/aliases
+      mydestination = $myhostname, /etc/mailname, localhost, localhost.localdomain, localhost
+      mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+      mailbox_size_limit = 0
+      recipient_delimiter = +
+      inet_interfaces = all
+      inet_protocols = ipv4
