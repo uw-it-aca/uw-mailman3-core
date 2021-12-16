@@ -110,6 +110,17 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
+    - name: postfix-test-secrets
+      externalKey: axdd/kv/data/postfix/test/secrets
+      data:
+        - name: jumphost-id-key
+          property: jumphost-id-key
+        - name: jumphost-id
+          property: jumphost-id
+        - name: jumphost-hostname
+          property: jumphost-hostname
+        - name: smtp-server
+          property: smtp-server
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
@@ -150,19 +161,33 @@ sidecarContainers:
       requests:
         cpu: 50m
         memory: 256Mi
-#  port25forwarder:
-#    image: kroniak/ssh-client
-#    env:
-#     - name: DJANGO_SECRET
-#       valueFrom:
-#         secretKeyRef:
-#           key: 
-#           name: uw-postfix-secrets
-#    command:
-#      - "sh"
-#      - "-c"
-#      - "echo ${SSH_ID_KEY} > ~/.ssh/id_rsa ; ssh ${SSH_ID}@${SSH_HOST} -N -L 25:${SMTP_RELAY}:25"
-
+  smtpforward:
+    image: kroniak/ssh-client
+    env:
+      - name: JUMPHOST_ID_KEY
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: jumphost-id-key
+      - name: JUMPHOST_ID
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: jumphost-id
+      - name: JUMPHOST_HOSTNAME
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: jumphost-hostname
+      - name: SMTP_SERVER
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: smtp-server
+    command:
+      - "sh"
+      - "-c"
+      - "mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 25:{SMTP_SERVER}:25"
 configmaps:
   main-cf:
     main.cf: |
