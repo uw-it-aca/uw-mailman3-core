@@ -75,10 +75,6 @@ metrics:
   enabled: false
 memcached:
   enabled: false
-podVolumes:
-  config-volume:
-    configMap:
-      name: mailman-core-prod-test-configmap-main-cf
 certs:
   mounted: false
 environmentVariables:
@@ -151,9 +147,9 @@ sidecarContainers:
         name: mailman-core-prod-test-pvc-var-spool-postfix
       - mountPath: /app/mailman/var
         name: mailman-core-prod-test-pvc-var-mailman
-      - name: config-volume
-        mountPath: /config/main.cf
+      - mountPath: /config/main.cf
         subPath: main.cf
+        name: postfix-config
     resources:
       limits:
         cpu: 500m
@@ -188,9 +184,41 @@ sidecarContainers:
       - "sh"
       - "-c"
       - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:{SMTP_SERVER}:25'
+
+podVolumes:
+  postfix-config:
+    configMap:
+      name: mailman-core-prod-test-configmap-postfix-main-cf
+  mailmain-config-template:
+    configMap:
+      name: mailman-core-prod-test-configmap-mailman-tpl
+  mailmain-hyperkitty-config-template:
+    configMap:
+      name: mailman-core-prod-test-configmap-mailman-hyperkitty-tpl
+  mailmain-gunicorn-config-template:
+    configMap:
+      name: mailman-core-prod-test-configmap-gunicorn-tpl
+  mailmain-postfix-mailman-config-template:
+    configMap:
+      name: mailman-core-prod-test-configmap-postfix-mailman-tpl
+
+volumeMounts:
+  - name: mailmain-config-template
+    mountPath: /config/mailman.tpl
+    subPath: mailman.tpl
+  - name: mailmain-hyperkitty-config-template
+    mountPath: /config/mailman-hyperkitty.tpl
+    subPath: mailman-hyperkitty.tpl
+  - name: mailmain-gunicorn-config-template
+    mountPath: /config/gunicorn.tpl
+    subPath: gunicorn.tpl
+  - name: mailmain-postfix-mailman-config-template
+    mountPath: /config/postfix-mailman.tpl
+    subPath: postfix-mailman.tpl
+
 configmaps:
-  main-cf:
-    main.cf: |
+  postfix-main-cf:
+    postfix-main.cf: |
       myhostname = mailman-core-prod-test
       mail_name = Mailman POC
       relayhost = smtp.uw.edu
@@ -218,3 +246,51 @@ configmaps:
       recipient_delimiter = +
       inet_interfaces = all
       inet_protocols = ipv4
+  mailman-tpl:
+    mailman.tpl: |
+      [paths.master]
+      var_dir: /app/mailman/var
+      [database]
+      ${DATABASE_URL}
+      ${DATABASE_CLASS}
+      [runner.retry]
+      sleep_time: 10s
+      [webservice]
+      hostname: ${MAILMAN_HOSTNAME}
+      port: 8000
+      admin_user: ${MAILMAN_ADMIN_USER}
+      admin_pass: ${MAILMAN_ADMIN_PASSWORD}
+      configuration: /app/mailman/var/etc/gunicorn.cfg
+      [archiver.hyperkitty]
+      class: mailman_hyperkitty.Archiver
+      enable: yes
+      configuration: /app/mailman/var/etc/mailman-hyperkitty.cfg
+      [mta]
+      #incoming: mailman.mta.exim4.LMTP
+      incoming: mailman.mta.postfix.LMTP
+      outgoing: mailman.mta.deliver.deliver
+      lmtp_host: ${MAILMAN_HOSTNAME}
+      lmtp_port: 8024
+      smtp_host: ${SMTP_HOST}
+      smtp_port: 25
+      #configuration: python:mailman.config.exim4
+      configuration: /app/mailman/var/etc/postfix-mailman.cfg
+      [mailman]
+      site_owner: ${MAILMAN_SITE_OWNER}
+      [logging.root]
+      path: /dev/stdout
+  mailman-hyperkitty-tpl:
+    mailman-hyperkitty.tpl: |
+      [general]
+      base_url: ${HYPERKITTY_BASE_URL}/hyperkitty/
+      api_key: ${HYPERKITTY_API_KEY}
+  gunicorn-tpl:
+    gunicorn.tpl: |
+      [gunicorn]
+      graceful_timeout = 30
+      timeout = 360
+  postfix-mailman-tpl:
+    postfix-mailman.tpl: |
+      [postfix]
+      transport_file_type: regex
+      postmap_command: true
