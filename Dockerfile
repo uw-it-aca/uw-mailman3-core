@@ -29,7 +29,8 @@ RUN python3 -m venv /app/mailman
 
 ## if these don't really need to be in /etc/ then move them to /app
 # these are copied into place via script/start.sh
-ADD etc/ /app/conf
+RUN mkdir /config
+# ADD etc/ /app/conf
 ADD requirements.txt /app/
 ADD scripts /scripts
 
