@@ -27,10 +27,8 @@ ENV LANG en_US.UTF-8
 # create mailman directory, prep virtualenv
 RUN python3 -m venv /app/mailman
 
-## if these don't really need to be in /etc/ then move them to /app
-# these are copied into place via script/start.sh
+## /config holds configmap'd config files and templates
 RUN mkdir /config
-# ADD etc/ /app/conf
 ADD requirements.txt /app/
 ADD scripts /scripts
 
