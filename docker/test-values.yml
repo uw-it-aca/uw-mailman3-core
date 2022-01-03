@@ -158,7 +158,7 @@ sidecarContainers:
         cpu: 50m
         memory: 256Mi
   smtpforward:
-    image: kroniak/ssh-client
+    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
     env:
       - name: JUMPHOST_ID_KEY
         valueFrom:
