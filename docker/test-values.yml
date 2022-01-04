@@ -29,6 +29,8 @@ ingress:
         - "/"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+  tcpServices:
+    25: "default/mailman-core-prod-test:25"
 securityPolicy:
   enabled: false
 readiness:
