@@ -31,6 +31,16 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   tcpServices:
     25: "default/mailman-core-prod-test:25"
+service:
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 25
+      targetPort: 25
+      protocol: TCP
+      name: smtp
 securityPolicy:
   enabled: false
 readiness:
