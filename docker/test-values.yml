@@ -60,7 +60,7 @@ repo: mailman-core
 instance: test
 resources:
   limits:
-    cpu: 550m
+    cpu: 500m
     memory: 1Gi
   requests:
     cpu: 50m
