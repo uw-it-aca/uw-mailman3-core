@@ -14,21 +14,6 @@ containerPorts:
       protocol: TCP
 autoscaling:
   enabled: false
-ingress:
-  enabled: true
-  type: nginx
-  tls:
-    test-mailman-core:
-      secretName: mailman-core-test.axdd.s.uw.edu-ingress-cert
-      hosts:
-        - mailman-core-test.axdd.s.uw.edu
-  hosts:
-    test-mailman-core:
-      host: mailman-core-test.axdd.s.uw.edu
-      paths:
-        - "/"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
 services:
   - ports:
       - port: 80
