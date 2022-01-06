@@ -29,18 +29,18 @@ ingress:
         - "/"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-  tcpServices:
-    25: "default/mailman-core-prod-test:25"
-service:
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-    - port: 25
-      targetPort: 25
-      protocol: TCP
-      name: smtp
+services:
+  - ports:
+      - port: 80
+        targetPort: http
+        protocol: TCP
+        name: http
+  - type: LoadBalancer
+    ports:
+      - port: 25
+        targetPort: 25
+        protocol: TCP
+        name: smtp
 securityPolicy:
   enabled: false
 readiness:
@@ -232,6 +232,7 @@ configmaps:
   postfix-main-cf:
     main.cf: |
       myhostname = mailman-core-prod-test
+      proxy_interfaces = 34.83.168.141
       mail_name = Mailman POC
       relayhost = smtp.uw.edu
       mail_owner = postfix
