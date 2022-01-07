@@ -118,7 +118,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: "gcr.io/uwit-mci-axdd/uw-postfix:590c196"
+    image: "gcr.io/uwit-mci-axdd/uw-postfix:c2026ee"
     resources:
       limits:
         cpu: 500m
@@ -216,7 +216,6 @@ configmaps:
   postfix-main-cf:
     main.cf: |
       myhostname = mailman-core-prod-test
-      proxy_interfaces = 34.83.168.141
       mail_name = Mailman POC
       relayhost = smtp.uw.edu
       mail_owner = postfix
