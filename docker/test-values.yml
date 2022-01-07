@@ -15,12 +15,7 @@ containerPorts:
 autoscaling:
   enabled: false
 services:
-  - ports:
-      - port: 80
-        targetPort: http
-        protocol: TCP
-        name: http
-  - type: LoadBalancer
+  LoadBalancer:
     ports:
       - port: 25
         targetPort: 25
@@ -50,21 +45,6 @@ resources:
   requests:
     cpu: 50m
     memory: 256Mi
-persistentVolume:
-  enabled: true
-  claimTemplates:
-    - name: var-mailman
-      accessModes:
-        - ReadWriteOnce
-      mountPath: /app/mailman/var
-      storageClassName: standard
-      storageSize: 10Gi
-    - name: var-spool-postfix
-      accessModes:
-        - ReadWriteOnce
-      mountPath: /var/spool/postfix
-      storageClassName: standard
-      storageSize: 3Gi
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
@@ -139,14 +119,6 @@ environmentVariablesSecrets:
 sidecarContainers:
   postfix:
     image: "gcr.io/uwit-mci-axdd/uw-postfix:590c196"
-    volumeMounts:
-      - mountPath: /var/spool/postfix
-        name: mailman-core-prod-test-pvc-var-spool-postfix
-      - mountPath: /app/mailman/var
-        name: mailman-core-prod-test-pvc-var-mailman
-      - mountPath: /config/main.cf
-        subPath: main.cf
-        name: postfix-config
     resources:
       limits:
         cpu: 500m
@@ -183,35 +155,62 @@ sidecarContainers:
       - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:{SMTP_SERVER}:25'
 
 podVolumes:
+  var-mailman:
+    volume:
+      claimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: standard
+        storageSize: 10Gi
+    mount:
+      mountPath: /app/mailman/var
+    containers: [ base, postfix ]
+  var-spool-postfix:
+    volume:
+      claimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: standard
+        storageSize: 3Gi
+    mount:
+      mountPath: /var/spool/postfix
+    containers: [ base, postfix ]
   postfix-config:
-    configMap:
-      name: mailman-core-prod-test-configmap-postfix-main-cf
-  mailmain-config-template:
-    configMap:
-      name: mailman-core-prod-test-configmap-mailman-tpl
-  mailmain-hyperkitty-config-template:
-    configMap:
-      name: mailman-core-prod-test-configmap-mailman-hyperkitty-tpl
-  mailmain-gunicorn-config-template:
-    configMap:
-      name: mailman-core-prod-test-configmap-gunicorn-tpl
-  mailmain-postfix-mailman-config-template:
-    configMap:
-      name: mailman-core-prod-test-configmap-postfix-mailman-tpl
-
-volumeMounts:
-  - name: mailmain-config-template
-    mountPath: /config/mailman.tpl
-    subPath: mailman.tpl
-  - name: mailmain-hyperkitty-config-template
-    mountPath: /config/mailman-hyperkitty.tpl
-    subPath: mailman-hyperkitty.tpl
-  - name: mailmain-gunicorn-config-template
-    mountPath: /config/gunicorn.tpl
-    subPath: gunicorn.tpl
-  - name: mailmain-postfix-mailman-config-template
-    mountPath: /config/postfix-mailman.tpl
-    subPath: postfix-mailman.tpl
+    volume:
+      configMap:
+        name: postfix-main-cf
+    mount:
+      mountPath: /config/main.cf
+      subPath: main.cf
+    containers: [ postfix ]
+  mailman-config-template:
+    volume:
+      configMap:
+        name: mailman-tpl
+    mount:
+      mountPath: /config/mailman.tpl
+      subPath: mailman.tpl
+  mailman-hyperkitty-config-template:
+    volume:
+      configMap:
+        name: mailman-hyperkitty-tpl
+    mount:
+      mountPath: /config/mailman-hyperkitty.tpl
+      subPath: mailman-hyperkitty.tpl
+  mailman-gunicorn-config-template:
+    volume:
+      configMap:
+        name: gunicorn-tpl
+    mount:
+      mountPath: /config/gunicorn.tpl
+      subPath: gunicorn.tpl
+  mailman-postfix-mailman-config-template:
+    volume:
+      configMap:
+        name: postfix-mailman-tpl
+    mount:
+      mountPath: /config/postfix-mailman.tpl
+      subPath: postfix-mailman.tpl
 
 configmaps:
   postfix-main-cf:
