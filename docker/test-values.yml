@@ -53,7 +53,10 @@ metrics:
 memcached:
   enabled: false
 certs:
-  mounted: false
+  mounted: true
+  certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
+  keyPath: /certs/mailman-core-test.axdd.s.uw.edu.key
+  secretName: mailman-core-test.axdd.s.uw.edu-certs
 environmentVariables:
   - name: ENV
     value: dev
@@ -94,6 +97,13 @@ externalSecrets:
           property: jumphost-hostname
         - name: smtp-server
           property: smtp-server
+    - name: mailman-core-test.axdd.s.uw.edu-certs
+      externalKey: axdd/kv/data/mailman/core/test/ic-certs
+      data:
+        - name: mailman-core-test.axdd.s.uw.edu.key
+          property: key
+        - name: mailman-core-test.axdd.s.uw.edu.cert
+          property: cert
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
@@ -228,8 +238,8 @@ configmaps:
       append_dot_mydomain = no
       readme_directory = no
       compatibility_level = 2
-      smtpd_tls_cert_file = /certs/ssl-cert-snakeoil.pem
-      smtpd_tls_key_file = /certs/ssl-cert-snakeoil.key
+      smtpd_tls_cert_file = /certs/mailman-core-test.axdd.s.uw.edu.cert
+      smtpd_tls_key_file = /certs/mailman-core-test.axdd.s.uw.edu.key
       smtpd_use_tls = yes
       smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
       smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
