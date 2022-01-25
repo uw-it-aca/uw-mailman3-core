@@ -89,14 +89,12 @@ externalSecrets:
     - name: postfix-test-secrets
       externalKey: axdd/kv/data/postfix/test/secrets
       data:
-        - name: jumphost-id-key
-          property: jumphost-id-key
-        - name: jumphost-id
-          property: jumphost-id
-        - name: jumphost-hostname
-          property: jumphost-hostname
-        - name: smtp-server
-          property: smtp-server
+        - name: smtp-relay-user
+          property: smtp-relay-user
+        - name: smtp-relay-password
+          property: smtp-relay-password
+        - name: smtp-relay
+          property: smtp-relay
     - name: mailman-core-test.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/test/ic-certs
       data:
@@ -128,7 +126,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: "gcr.io/uwit-mci-axdd/uw-postfix:c2026ee"
+    image: "gcr.io/uwit-mci-axdd/uw-postfix:715cd53"
     resources:
       limits:
         cpu: 500m
@@ -136,33 +134,49 @@ sidecarContainers:
       requests:
         cpu: 50m
         memory: 256Mi
-  smtpforward:
-    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
     env:
-      - name: JUMPHOST_ID_KEY
+      - name: SMTP_RELAY_USER
         valueFrom:
           secretKeyRef:
             name: postfix-test-secrets
-            key: jumphost-id-key
-      - name: JUMPHOST_ID
+            key: smtp-relay-user
+      - name: SMTP_RELAY_PASSWORD
         valueFrom:
           secretKeyRef:
             name: postfix-test-secrets
-            key: jumphost-id
-      - name: JUMPHOST_HOSTNAME
+            key: smtp-relay-password
+      - name: SMTP_RELAY
         valueFrom:
           secretKeyRef:
             name: postfix-test-secrets
-            key: jumphost-hostname
-      - name: SMTP_SERVER
-        valueFrom:
-          secretKeyRef:
-            name: postfix-test-secrets
-            key: smtp-server
-    command:
-      - "sh"
-      - "-c"
-      - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:{SMTP_SERVER}:25'
+            key: smtp-relay
+#  smtpforward:
+#    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
+#    env:
+#      - name: JUMPHOST_ID_KEY
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-id-key
+#      - name: JUMPHOST_ID
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-id
+#      - name: JUMPHOST_HOSTNAME
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-hostname
+#      - name: SMTP_SERVER
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: smtp-server
+#    command:
+#      - "sh"
+#      - "-c"
+#      - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:${SMTP_SERVER}:25'
 
 podVolumes:
   var-mailman:
@@ -188,10 +202,10 @@ podVolumes:
   postfix-config:
     volume:
       configMap:
-        name: postfix-main-cf
+        name: postfix-main-tpl
     mount:
-      mountPath: /config/main.cf
-      subPath: main.cf
+      mountPath: /config/main.tpl
+      subPath: main.tpl
     containers: [ postfix ]
   mailman-config-template:
     volume:
@@ -223,11 +237,15 @@ podVolumes:
       subPath: postfix-mailman.tpl
 
 configmaps:
-  postfix-main-cf:
-    main.cf: |
+  postfix-main-tpl:
+    main.tpl: |
       myhostname = mailman-core-prod-test
       mail_name = Mailman POC
-      relayhost = smtp.uw.edu
+      smtp_sasl_auth_enable = yes
+      smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
+      smtp_sasl_security_options = noanonymous
+      smtp_tls_security_level = encrypt
+      relayhost = ${SMTP_RELAY}:587
       mail_owner = postfix
       setgid_group = postdrop
       maillog_file = /dev/stdout
