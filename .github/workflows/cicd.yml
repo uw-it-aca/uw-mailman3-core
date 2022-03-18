@@ -88,6 +88,8 @@ jobs:
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
           commit_hash: ${{ needs.context.outputs.commit_hash }}
           git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
+          gcp_production_project: 'uwit-mci-0015'
+          gcp_production_flux_instance: 'mailman'
 
       - name: 'Surface context from executed build step'
         id: context
