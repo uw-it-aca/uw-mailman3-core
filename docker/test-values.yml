@@ -1,0 +1,320 @@
+replicaCount: 1
+statefulset:
+  enabled: true
+deployment:
+  enabled: false
+containerPorts:
+  enabled: true
+  ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+    - name: smtp
+      containerPort: 25
+      protocol: TCP
+autoscaling:
+  enabled: false
+services:
+  LoadBalancer:
+    ports:
+      - port: 25
+        targetPort: 25
+        protocol: TCP
+        name: smtp
+securityPolicy:
+  enabled: false
+readiness:
+  enabled: true
+database:
+  engine: postgres
+  name: mailman
+  hostname: mailman-core-db-test-service
+  secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
+externalService:
+  enabled: true
+  name: mailman-core-db-test-service
+  type: ClusterIP
+  serviceAddress: 172.18.1.64
+  servicePort: 5432
+repo: mailman-core
+instance: test
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+image:
+  repository: gcr.io/uwit-mci-axdd/mailman-core
+  tag: IMAGE_TAG
+metrics:
+  enabled: false
+memcached:
+  enabled: false
+certs:
+  mounted: true
+  certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
+  keyPath: /certs/mailman-core-test.axdd.s.uw.edu.key
+  secretName: mailman-core-test.axdd.s.uw.edu-certs
+environmentVariables:
+  - name: ENV
+    value: dev
+externalSecrets:
+  enabled: true
+  secrets:
+    - name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+      externalKey: axdd/kv/data/mailman/shared/test/secrets
+      data:
+        - name: mailman-admin-user
+          property: mailman-admin-user
+        - name: mailman-admin-password
+          property: mailman-admin-password
+        - name: hyperkitty-api-key
+          property: hyperkitty-api-key
+    - name: mailman-core-test.axdd.s.uw.edu-secrets
+      externalKey: axdd/kv/data/mailman/core/test/secrets
+      data:
+        - name: mailman-site-owner
+          property: mailman-site-owner
+        - name: smtp-host
+          property: smtp-host
+    - name: mailman-core-test.axdd.s.uw.edu-sql-secret
+      externalKey: axdd/kv/data/mailman/core/test/sql-secret
+      data:
+        - name: username
+          property: sql_user
+        - name: password
+          property: sql_pass
+    - name: postfix-test-secrets
+      externalKey: axdd/kv/data/postfix/test/secrets
+      data:
+        - name: smtp-relay-user
+          property: smtp-relay-user
+        - name: smtp-relay-password
+          property: smtp-relay-password
+        - name: smtp-relay
+          property: smtp-relay
+    - name: mailman-core-test.axdd.s.uw.edu-certs
+      externalKey: axdd/kv/data/mailman/core/test/ic-certs
+      data:
+        - name: mailman-core-test.axdd.s.uw.edu.key
+          property: key
+        - name: mailman-core-test.axdd.s.uw.edu.cert
+          property: cert
+environmentVariablesSecrets:
+  mailmanAdminUser:
+    name: MAILMAN_ADMIN_USER
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretKey: mailman-admin-user
+  mailmanAdminPassword:
+    name: MAILMAN_ADMIN_PASSWORD
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretKey: mailman-admin-password
+  hyperkittyAPIKey:
+    name: HYPERKITTY_API_KEY
+    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretKey: hyperkitty-api-key
+  mailmanSiteOwner:
+    name: MAILMAN_SITE_OWNER
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: mailman-site-owner
+  smtpHostname:
+    name: SMTP_HOST
+    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretKey: smtp-host
+
+sidecarContainers:
+  postfix:
+    image: "gcr.io/uwit-mci-axdd/uw-postfix:715cd53"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    env:
+      - name: SMTP_RELAY_USER
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: smtp-relay-user
+      - name: SMTP_RELAY_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: smtp-relay-password
+      - name: SMTP_RELAY
+        valueFrom:
+          secretKeyRef:
+            name: postfix-test-secrets
+            key: smtp-relay
+#  smtpforward:
+#    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
+#    env:
+#      - name: JUMPHOST_ID_KEY
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-id-key
+#      - name: JUMPHOST_ID
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-id
+#      - name: JUMPHOST_HOSTNAME
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: jumphost-hostname
+#      - name: SMTP_SERVER
+#        valueFrom:
+#          secretKeyRef:
+#            name: postfix-test-secrets
+#            key: smtp-server
+#    command:
+#      - "sh"
+#      - "-c"
+#      - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:${SMTP_SERVER}:25'
+
+podVolumes:
+  var-mailman:
+    volume:
+      claimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: standard
+        storageSize: 10Gi
+    mount:
+      mountPath: /app/mailman/var
+    containers: [ base, postfix ]
+  var-spool-postfix:
+    volume:
+      claimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: standard
+        storageSize: 3Gi
+    mount:
+      mountPath: /var/spool/postfix
+    containers: [ base, postfix ]
+  postfix-config:
+    volume:
+      configMap:
+        name: postfix-main-tpl
+    mount:
+      mountPath: /config/main.tpl
+      subPath: main.tpl
+    containers: [ postfix ]
+  mailman-config-template:
+    volume:
+      configMap:
+        name: mailman-tpl
+    mount:
+      mountPath: /config/mailman.tpl
+      subPath: mailman.tpl
+  mailman-hyperkitty-config-template:
+    volume:
+      configMap:
+        name: mailman-hyperkitty-tpl
+    mount:
+      mountPath: /config/mailman-hyperkitty.tpl
+      subPath: mailman-hyperkitty.tpl
+  mailman-gunicorn-config-template:
+    volume:
+      configMap:
+        name: gunicorn-tpl
+    mount:
+      mountPath: /config/gunicorn.tpl
+      subPath: gunicorn.tpl
+  mailman-postfix-mailman-config-template:
+    volume:
+      configMap:
+        name: postfix-mailman-tpl
+    mount:
+      mountPath: /config/postfix-mailman.tpl
+      subPath: postfix-mailman.tpl
+
+configmaps:
+  postfix-main-tpl:
+    main.tpl: |
+      myhostname = mailman-core-prod-test
+      mail_name = Mailman POC
+      smtp_sasl_auth_enable = yes
+      smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
+      smtp_sasl_security_options = noanonymous
+      smtp_tls_security_level = encrypt
+      relayhost = ${SMTP_RELAY}:587
+      mail_owner = postfix
+      setgid_group = postdrop
+      maillog_file = /dev/stdout
+      smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+      biff = no
+      queue_directory = /var/spool/postfix
+      data_directory = /var/lib/postfix
+      append_dot_mydomain = no
+      readme_directory = no
+      compatibility_level = 2
+      smtpd_tls_cert_file = /certs/mailman-core-test.axdd.s.uw.edu.cert
+      smtpd_tls_key_file = /certs/mailman-core-test.axdd.s.uw.edu.key
+      smtpd_use_tls = yes
+      smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+      smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+      smtpd_recipient_restrictions = reject, reject_unauth_destination
+      alias_maps = hash:/etc/aliases
+      alias_database = hash:/etc/aliases
+      mydestination = $myhostname, /etc/mailname, localhost, localhost.localdomain, localhost
+      mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+      mailbox_size_limit = 0
+      recipient_delimiter = +
+      inet_interfaces = all
+      inet_protocols = ipv4
+  mailman-tpl:
+    mailman.tpl: |
+      [paths.master]
+      var_dir: /app/mailman/var
+      [database]
+      ${DATABASE_URL}
+      ${DATABASE_CLASS}
+      [runner.retry]
+      sleep_time: 10s
+      [webservice]
+      hostname: ${MAILMAN_HOSTNAME}
+      port: 8000
+      admin_user: ${MAILMAN_ADMIN_USER}
+      admin_pass: ${MAILMAN_ADMIN_PASSWORD}
+      configuration: /app/mailman/var/etc/gunicorn.cfg
+      [archiver.hyperkitty]
+      class: mailman_hyperkitty.Archiver
+      enable: yes
+      configuration: /app/mailman/var/etc/mailman-hyperkitty.cfg
+      [mta]
+      #incoming: mailman.mta.exim4.LMTP
+      incoming: mailman.mta.postfix.LMTP
+      outgoing: mailman.mta.deliver.deliver
+      lmtp_host: ${MAILMAN_HOSTNAME}
+      lmtp_port: 8024
+      smtp_host: ${SMTP_HOST}
+      smtp_port: 25
+      #configuration: python:mailman.config.exim4
+      configuration: /app/mailman/var/etc/postfix-mailman.cfg
+      [mailman]
+      site_owner: ${MAILMAN_SITE_OWNER}
+      [logging.root]
+      path: /dev/stdout
+  mailman-hyperkitty-tpl:
+    mailman-hyperkitty.tpl: |
+      [general]
+      base_url: ${HYPERKITTY_BASE_URL}/hyperkitty/
+      api_key: ${HYPERKITTY_API_KEY}
+  gunicorn-tpl:
+    gunicorn.tpl: |
+      [gunicorn]
+      graceful_timeout = 30
+      timeout = 360
+  postfix-mailman-tpl:
+    postfix-mailman.tpl: |
+      [postfix]
+      transport_file_type: regex
+      postmap_command: true
