@@ -78,9 +78,20 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Deployment Pipeline
+      - name: Develop Deployment Pipeline
         if: >-
-          contains(fromJSON('["main", "develop"]'),
+          contains(fromJSON('["develop"]'),
+            needs.context.outputs.git_repo_branch)
+        uses: uw-it-aca/actions/cicd-deploy@feature/flux-default-branch
+        with:
+          release_name: ${{ env.RELEASE_NAME }}
+          gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
+          commit_hash: ${{ needs.context.outputs.commit_hash }}
+          git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
+
+      - name: Main Deployment Pipeline
+        if: >-
+          contains(fromJSON('["main"]'),
             needs.context.outputs.git_repo_branch)
         uses: uw-it-aca/actions/cicd-deploy@feature/flux-default-branch
         with:
