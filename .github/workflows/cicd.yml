@@ -99,7 +99,7 @@ jobs:
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
           commit_hash: ${{ needs.context.outputs.commit_hash }}
           git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
-          gcp_production_project: 'uwit-mci-0015'
+          gcp_production_project: 'uwit-mci-0016'
           gcp_production_flux_instance: 'mailman'
           flux_repo_default_branch: 'main'
 
@@ -117,7 +117,7 @@ jobs:
 
     steps:
       - name: House Keeping
-        uses: uw-it-aca/actions/cicd-housekeeping@main
+        uses: uw-it-aca/actions/cicd-housekeeping@feature/flux-default-branch
         with:
           release_name: ${{ env.RELEASE_NAME }}
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
