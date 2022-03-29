@@ -40,10 +40,10 @@ repo: mailman-core
 instance: prod
 resources:
   limits:
-    cpu: "4"
+    cpu: "1"
     memory: 4Gi
   requests:
-    cpu: "2"
+    cpu: 500m
     memory: 2Gi
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
@@ -120,7 +120,7 @@ sidecarContainers:
     image: "gcr.io/uwit-mci-axdd/uw-postfix:715cd53"
     resources:
       limits:
-        cpu: "2"
+        cpu: "1"
         memory: 1Gi
       requests:
         cpu: 500m
