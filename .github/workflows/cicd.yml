@@ -57,12 +57,13 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
-      - name: Push Image to GCR
+      - name: Push Image to GAR
         if: github.event_name == 'push'
         uses: uw-it-aca/actions/gcr-push@main
         with:
           image_tag: ${{ needs.context.outputs.image_tag }}
           gcp_json_key: ${{ secrets.GCP_JSON_KEY }}
+          gcr_hostname: 'us-docker.pkg.dev'
 
   deploy:
     if: github.event_name == 'push'
