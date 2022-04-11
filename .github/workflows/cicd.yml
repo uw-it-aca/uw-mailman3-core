@@ -59,11 +59,12 @@ jobs:
 
       - name: Push Image to GAR
         if: github.event_name == 'push'
-        uses: uw-it-aca/actions/gcr-push@main
+        uses: uw-it-aca/actions/gcr-push@feature/google-artifact-registry
         with:
           image_tag: ${{ needs.context.outputs.image_tag }}
           gcp_json_key: ${{ secrets.GCP_JSON_KEY }}
           gcr_hostname: 'us-docker.pkg.dev'
+          container_path: 'containers'
 
   deploy:
     if: github.event_name == 'push'
