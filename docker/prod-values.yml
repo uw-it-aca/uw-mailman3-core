@@ -1,6 +1,21 @@
 replicaCount: 1
 statefulset:
   enabled: true
+  affinityTemplate: |
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: "app.kubernetes.io/name"
+                operator: In
+                values:
+                  - "{{ .Values.releaseIdentifier }}"
+          topologyKey: "kubernetes.io/hostname"
+tolerations:
+  - key: "uw.edu/dedicated"
+    operator: "Equal"
+    value: "mmcore"
+    effect: "NoSchedule"
 deployment:
   enabled: false
 containerPorts:
