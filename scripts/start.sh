@@ -22,6 +22,15 @@ CONFIG_FILE_DIRECTORY=/app/mailman/var/etc
 CONFIG_TEMPLATE_DIRECTORY=/config
 CONFIG_TEMPLATE_EXTENSION=tpl
 CONFIG_FILE_EXTENSION=cfg
+echo "me: $(whoami)"
+echo "ls -ld /app"
+ls -ld /app
+echo "ls -ld /app/mailman"
+ls -ld /app/mailman
+echo "ls -ld /app/mailman/var"
+ls -ld /app/mailman/var
+echo "ls -l /app/mail/man/var"
+ls -l /app/mail/man/var
 mkdir -p $CONFIG_FILE_DIRECTORY
 for CFG_TEMPLATE_IN in $(echo ${CONFIG_TEMPLATE_DIRECTORY}/*.${CONFIG_TEMPLATE_EXTENSION})
 do
