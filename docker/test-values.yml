@@ -246,6 +246,7 @@ configmaps:
       smtp_sasl_security_options = noanonymous
       smtp_tls_security_level = encrypt
       relayhost = ${SMTP_RELAY}:587
+      relay_domains = uw.edu
       mail_owner = postfix
       setgid_group = postdrop
       maillog_file = /dev/stdout
