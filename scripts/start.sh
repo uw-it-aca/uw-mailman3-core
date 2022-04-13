@@ -29,8 +29,8 @@ echo "ls -ld /app/mailman"
 ls -ld /app/mailman
 echo "ls -ld /app/mailman/var"
 ls -ld /app/mailman/var
-echo "ls -l /app/mail/man/var"
-ls -l /app/mail/man/var
+echo "ls -l /app/mailman/var"
+ls -l /app/mailman/var
 mkdir -p $CONFIG_FILE_DIRECTORY
 for CFG_TEMPLATE_IN in $(echo ${CONFIG_TEMPLATE_DIRECTORY}/*.${CONFIG_TEMPLATE_EXTENSION})
 do
