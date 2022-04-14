@@ -271,7 +271,7 @@ configmaps:
       recipient_delimiter = +
       inet_interfaces = all
       inet_protocols = ipv4
-      ignore_mx_lookup_error = yes
+      smtp_host_lookup = dns, native
   mailman-tpl:
     mailman.tpl: |
       [paths.master]
