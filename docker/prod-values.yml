@@ -132,7 +132,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: "gcr.io/uwit-mci-axdd/uw-postfix:715cd53"
+    image: "gcr.io/uwit-mci-axdd/uw-postfix:50894ba"
     resources:
       limits:
         cpu: "1"
