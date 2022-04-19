@@ -49,8 +49,6 @@ ENV MAILMAN_VAR_DIR /app/mailman/var
 ADD certs certs
 RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
 
-RUN /scripts/pre_start.sh
-
 USER mailman
 
 CMD ["/scripts/start.sh"]
