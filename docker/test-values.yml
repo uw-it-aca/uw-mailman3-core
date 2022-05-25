@@ -266,7 +266,7 @@ configmaps:
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, localhost, localhost.localdomain, localhost
-      mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.0.0.0/8
+      mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
       mailbox_size_limit = 0
       recipient_delimiter = +
       inet_interfaces = all
@@ -304,6 +304,7 @@ configmaps:
       site_owner: ${MAILMAN_SITE_OWNER}
       [logging.root]
       path: /dev/stdout
+      level: debug
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
