@@ -91,14 +91,14 @@ externalSecrets:
         - name: hyperkitty-api-key
           property: hyperkitty-api-key
     - name: mailman-core-test.axdd.s.uw.edu-secrets
-      externalKey: mailman/core/test/secrets
+      externalKey: axdd/kv/data/mailman/core/test/secrets
       data:
         - name: mailman-site-owner
           property: mailman-site-owner
         - name: smtp-host
           property: smtp-host
     - name: mailman-core-test.axdd.s.uw.edu-sql-secret
-      externalKey: mailman/core/test/sql-secret
+      externalKey: axdd/kv/data/mailman/core/test/sql-secret
       data:
         - name: username
           property: sql_user
@@ -114,12 +114,12 @@ externalSecrets:
         - name: smtp-relay
           property: smtp-relay
     - name: mailman-core-test.axdd.s.uw.edu-gcs-credentials
-      externalKey: mailman/core/shared/gcs-credentials
+      externalKey: axdd/kv/data/mailman/core/shared/gcs-credentials
       data:
         - name: credentials.json
           property: credentials.json
     - name: mailman-core-test.axdd.s.uw.edu-certs
-      externalKey: mailman/core/test/ic-certs
+      externalKey: axdd/kv/data/mailman/core/test/ic-certs
       data:
         - name: mailman-core-test.axdd.s.uw.edu.key
           property: key
@@ -237,6 +237,7 @@ podVolumes:
     mount:
       mountPath: /config/mailman.tpl
       subPath: mailman.tpl
+    containers: [ base ]
   mailman-hyperkitty-config-template:
     volume:
       configMap:
@@ -244,6 +245,7 @@ podVolumes:
     mount:
       mountPath: /config/mailman-hyperkitty.tpl
       subPath: mailman-hyperkitty.tpl
+    containers: [ base ]
   mailman-gunicorn-config-template:
     volume:
       configMap:
@@ -251,6 +253,7 @@ podVolumes:
     mount:
       mountPath: /config/gunicorn.tpl
       subPath: gunicorn.tpl
+    containers: [ base ]
   mailman-postfix-mailman-config-template:
     volume:
       configMap:
