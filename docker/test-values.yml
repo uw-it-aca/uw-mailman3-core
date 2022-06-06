@@ -48,7 +48,7 @@ resources:
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
-cronjob:
+xcronjob:
   enabled: true
   jobs:
     - name: level-0-backups
@@ -211,7 +211,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix ]
+    containers: [ base, postfix, level-0-backups ]
   var-spool-postfix:
     volume:
       claimTemplate:
