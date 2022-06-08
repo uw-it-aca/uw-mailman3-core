@@ -48,21 +48,6 @@ resources:
 image:
   repository: gcr.io/uwit-mci-axdd/mailman-core
   tag: IMAGE_TAG
-xcronjob:
-  enabled: true
-  jobs:
-    - name: level-0-backups
-      image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:57df98c"
-      schedule: "10 1 * * *"
-      command: ["/scripts/backup.sh"]
-      args: ["0", "/app/mailman/var", "mailman-backups"]
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 25m
-          memory: 64Mi
 gcsCredentials:
   mounted: true
   secretName: mailman-core-test.axdd.s.uw.edu-gcs-credentials
@@ -173,6 +158,17 @@ sidecarContainers:
           secretKeyRef:
             name: postfix-test-secrets
             key: smtp-relay
+  level-0-backup:
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:1069a32"
+    command: ["/scripts/cron.sh"]
+    args: ["10 1 * * *", "/scripts/backup.sh 0 /app/mailman/var mailman-backups"]
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 25m
+        memory: 64Mi
 #  smtpforward:
 #    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
 #    env:
@@ -211,7 +207,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix, level-0-backups ]
+    containers: [ base, postfix, level-0-backup ]
   var-spool-postfix:
     volume:
       claimTemplate:
