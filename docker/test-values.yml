@@ -53,6 +53,13 @@ gcsCredentials:
   secretName: mailman-core-test.axdd.s.uw.edu-gcs-credentials
 metrics:
   enabled: true
+  serviceMonitor:
+    enabled: false
+  pushgateway:
+    enabled: true
+    replicaCount: 1
+cronjob:
+  enabled: true
 memcached:
   enabled: false
 certs:
@@ -159,7 +166,7 @@ sidecarContainers:
             name: postfix-test-secrets
             key: smtp-relay
   mailman-backup:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:0a61304"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:4787332"
     args: [ "/scripts/cron.sh", "/config/backup.cron"]
     resources:
       limits:
