@@ -169,6 +169,9 @@ sidecarContainers:
       requests:
         cpu: 25m
         memory: 64Mi
+    env:
+      - name: GCLOUD_AUTH_FILE
+        value: /gcs/credentials.json
 #  smtpforward:
 #    image: "gcr.io/uwit-mci-axdd/uw-ssh-client:4aad3bd"
 #    env:
