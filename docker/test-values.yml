@@ -158,10 +158,9 @@ sidecarContainers:
           secretKeyRef:
             name: postfix-test-secrets
             key: smtp-relay
-  level-0-backup:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:1069a32"
-    command: ["/scripts/cron.sh"]
-    args: ["10 1 * * *", "/scripts/backup.sh 0 /app/mailman/var mailman-backups"]
+  mailman-backup:
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:0a61304"
+    args: [ "/scripts/cron.sh", "/config/backup.cron"]
     resources:
       limits:
         cpu: 500m
@@ -210,7 +209,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix, level-0-backup ]
+    containers: [ base, postfix, mailman-backup ]
   var-spool-postfix:
     volume:
       claimTemplate:
@@ -260,6 +259,14 @@ podVolumes:
     mount:
       mountPath: /config/postfix-mailman.tpl
       subPath: postfix-mailman.tpl
+  mailman-backup-schedule:
+    volume:
+      configMap:
+        name: mailman-backup-schedule
+    mount:
+      mountPath: /config/backup.cron
+      subPath: backup.cron
+    containers: [ mailman-backup ]
 
 configmaps:
   postfix-main-tpl:
@@ -345,3 +352,6 @@ configmaps:
       [postfix]
       transport_file_type: regex
       postmap_command: true
+  mailman-backup-schedule:
+    backup.cron: |
+      10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
