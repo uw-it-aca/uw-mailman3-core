@@ -149,7 +149,7 @@ sidecarContainers:
       requests:
         cpu: 50m
         memory: 256Mi
-    env:
+    environmentVariables:
       - name: SMTP_RELAY_USER
         valueFrom:
           secretKeyRef:
@@ -166,7 +166,7 @@ sidecarContainers:
             name: postfix-test-secrets
             key: smtp-relay
   mailman-backup:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:4787332"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:7eb0a58"
     args: [ "/scripts/cron.sh", "/config/backup.cron"]
     resources:
       limits:
@@ -175,7 +175,7 @@ sidecarContainers:
       requests:
         cpu: 25m
         memory: 64Mi
-    env:
+    environmentVariables:
       - name: GCLOUD_AUTH_FILE
         value: /gcs/credentials.json
 #  smtpforward:
