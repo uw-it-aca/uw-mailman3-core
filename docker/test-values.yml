@@ -46,7 +46,7 @@ resources:
     cpu: 50m
     memory: 256Mi
 image:
-  repository: gcr.io/uwit-mci-axdd/mailman-core
+  repository: REPO_PATH
   tag: IMAGE_TAG
 gcsCredentials:
   mounted: true
@@ -60,8 +60,6 @@ metrics:
     replicaCount: 1
 cronjob:
   enabled: true
-memcached:
-  enabled: false
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
