@@ -63,6 +63,9 @@ resources:
 image:
   repository: REPO_PATH
   tag: IMAGE_TAG
+gcsCredentials:
+  mounted: true
+  secretName: mailman-core-prod.axdd.s.uw.edu-gcs-credentials
 metrics:
   enabled: true
   serviceMonitor:
@@ -106,7 +109,7 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
-    - name: mailman-core-test.axdd.s.uw.edu-gcs-credentials
+    - name: mailman-core-prod.axdd.s.uw.edu-gcs-credentials
       externalKey: axdd/kv/data/mailman/core/shared/gcs-credentials
       data:
         - name: credentials.json
