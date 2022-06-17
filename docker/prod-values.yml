@@ -61,12 +61,17 @@ resources:
     cpu: 500m
     memory: 1Gi
 image:
-  repository: gcr.io/uwit-mci-axdd/mailman-core
+  repository: REPO_PATH
   tag: IMAGE_TAG
 metrics:
-  enabled: false
-memcached:
-  enabled: false
+  enabled: true
+  serviceMonitor:
+    enabled: false
+  pushgateway:
+    enabled: true
+    replicaCount: 1
+cronjob:
+  enabled: true
 certs:
   mounted: true
   certPath: /certs/mailman-core-prod.axdd.s.uw.edu.cert
@@ -101,6 +106,11 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
+    - name: mailman-core-test.axdd.s.uw.edu-gcs-credentials
+      externalKey: axdd/kv/data/mailman/core/shared/gcs-credentials
+      data:
+        - name: credentials.json
+          property: credentials.json
     - name: mailman-core-prod.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/prod/ic-certs
       data:
@@ -140,6 +150,20 @@ sidecarContainers:
       requests:
         cpu: 500m
         memory: 256Mi
+  mailman-backup:
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-gcp-task:7eb0a58"
+    args: [ "/scripts/cron.sh", "/config/backup.cron"]
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 25m
+        memory: 64Mi
+    environmentVariables:
+      - name: GCLOUD_AUTH_FILE
+        value: /gcs/credentials.json
+
 podVolumes:
   var-mailman:
     volume:
@@ -150,7 +174,7 @@ podVolumes:
         storageSize: 100Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix ]
+    containers: [ base, postfix, mailman-backup ]
   var-spool-postfix:
     volume:
       claimTemplate:
@@ -176,6 +200,7 @@ podVolumes:
     mount:
       mountPath: /config/mailman.tpl
       subPath: mailman.tpl
+    containers: [ base ]
   mailman-hyperkitty-config-template:
     volume:
       configMap:
@@ -183,6 +208,7 @@ podVolumes:
     mount:
       mountPath: /config/mailman-hyperkitty.tpl
       subPath: mailman-hyperkitty.tpl
+    containers: [ base ]
   mailman-gunicorn-config-template:
     volume:
       configMap:
@@ -190,6 +216,7 @@ podVolumes:
     mount:
       mountPath: /config/gunicorn.tpl
       subPath: gunicorn.tpl
+    containers: [ base ]
   mailman-postfix-mailman-config-template:
     volume:
       configMap:
@@ -197,6 +224,14 @@ podVolumes:
     mount:
       mountPath: /config/postfix-mailman.tpl
       subPath: postfix-mailman.tpl
+  mailman-backup-schedule:
+    volume:
+      configMap:
+        name: mailman-backup-schedule
+    mount:
+      mountPath: /config/backup.cron
+      subPath: backup.cron
+    containers: [ mailman-backup ]
 
 configmaps:
   postfix-main-tpl:
@@ -275,3 +310,6 @@ configmaps:
       [postfix]
       transport_file_type: regex
       postmap_command: true
+  mailman-backup-schedule:
+    backup.cron: |
+      10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
