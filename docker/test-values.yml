@@ -12,8 +12,6 @@ containerPorts:
     - name: smtp
       containerPort: 25
       protocol: TCP
-autoscaling:
-  enabled: false
 services:
   LoadBalancer:
     ports:
@@ -38,6 +36,8 @@ externalService:
   servicePort: 5432
 repo: mailman-core
 instance: test
+autoscaling:
+  enabled: false
 resources:
   limits:
     cpu: 500m
@@ -340,6 +340,54 @@ configmaps:
       [mailman]
       site_owner: ${MAILMAN_SITE_OWNER}
       [logging.root]
+      path: /dev/stdout
+      level: debug
+      [logging.archiver]
+      path: /dev/stdout
+      level: debug
+      [logging.archiver]
+      path: /dev/stdout
+      level: debug
+      [logging.bounce]
+      path: /dev/stdout
+      level: debug
+      [logging.config]
+      path: /dev/stdout
+      level: debug
+      [logging.database]
+      path: /dev/stdout
+      level: debug
+      [logging.debug]
+      path: /dev/stdout
+      level: debug
+      [logging.error]
+      path: /dev/stdout
+      level: debug
+      [logging.fromusenet]
+      path: /dev/stdout
+      level: debug
+      [logging.http]
+      path: /dev/stdout
+      level: debug
+      [logging.locks]
+      path: /dev/stdout
+      level: debug
+      [logging.mischief]
+      path: /dev/stdout
+      level: debug
+      [logging.plugins]
+      path: /dev/stdout
+      level: debug
+      [logging.runner]
+      path: /dev/stdout
+      level: debug
+      [logging.smtp]
+      path: /dev/stdout
+      level: debug
+      [logging.subscribe]
+      path: /dev/stdout
+      level: debug
+      [logging.vette]
       path: /dev/stdout
       level: debug
   mailman-hyperkitty-tpl:
