@@ -265,6 +265,9 @@ configmaps:
       recipient_delimiter = +
       inet_interfaces = all
       inet_protocols = ipv4
+      transport_maps = regexp:/app/mailman/var/data/postfix_lmtp
+      relay_domains = regexp:/app/mailman/var/data/postfix_domains
+      virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
   mailman-tpl:
     mailman.tpl: |
       [paths.master]
@@ -312,7 +315,7 @@ configmaps:
     postfix-mailman.tpl: |
       [postfix]
       transport_file_type: regex
-      postmap_command: true
+      # postmap_command: true
   mailman-backup-schedule:
     backup.cron: |
       10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
