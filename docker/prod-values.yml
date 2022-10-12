@@ -315,7 +315,7 @@ configmaps:
     postfix-mailman.tpl: |
       [postfix]
       transport_file_type: regex
-      # postmap_command: true
+      postmap_command: true
   mailman-backup-schedule:
     backup.cron: |
       10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
