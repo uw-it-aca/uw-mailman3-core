@@ -283,7 +283,7 @@ configmaps:
       smtp_sasl_security_options = noanonymous
       smtp_tls_security_level = encrypt
       relayhost = ${SMTP_RELAY}:587
-      relay_domains = uw.edu
+      # relay_domains = uw.edu
       mail_owner = postfix
       setgid_group = postdrop
       maillog_file = /dev/stdout
@@ -306,6 +306,8 @@ configmaps:
       mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
       mailbox_size_limit = 0
       recipient_delimiter = +
+      unknown_local_recipient_reject_code = 550
+      owner_request_special = no
       inet_interfaces = all
       inet_protocols = ipv4
       transport_maps = regexp:/app/mailman/var/data/postfix_lmtp
@@ -336,7 +338,8 @@ configmaps:
       outgoing: mailman.mta.deliver.deliver
       lmtp_host: ${MAILMAN_HOSTNAME}
       lmtp_port: 8024
-      smtp_host: ${SMTP_HOST}
+      #smtp_host: ${SMTP_HOST}
+      smtp_host: ${MAILMAN_HOSTNAME}
       smtp_port: 25
       #configuration: python:mailman.config.exim4
       configuration: /app/mailman/var/etc/postfix-mailman.cfg
