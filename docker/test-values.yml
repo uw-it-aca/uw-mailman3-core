@@ -329,7 +329,7 @@ configmaps:
       admin_pass: ${MAILMAN_ADMIN_PASSWORD}
       configuration: /app/mailman/var/etc/gunicorn.cfg
       [archiver.hyperkitty]
-      class: hyperkitty.Archiver
+      class: mailman_hyperkitty.Archiver
       enable: yes
       configuration: /app/mailman/var/etc/mailman-hyperkitty.cfg
       [mta]
