@@ -266,6 +266,7 @@ configmaps:
       inet_interfaces = all
       inet_protocols = ipv4
       transport_maps = regexp:/app/mailman/var/data/postfix_lmtp
+      local_recipient_maps = regexp:/app/mailman/var/data/postfix_lmtp
       relay_domains = regexp:/app/mailman/var/data/postfix_domains
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
   mailman-tpl:
