@@ -277,6 +277,7 @@ configmaps:
   postfix-main-tpl:
     main.tpl: |
       myhostname = mailman-core-prod-test
+      mydomain = test.lists.uw.edu
       mail_name = Mailman POC
       smtp_sasl_auth_enable = yes
       smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
@@ -297,8 +298,8 @@ configmaps:
       smtpd_tls_cert_file = /certs/mailman-core-test.axdd.s.uw.edu.cert
       smtpd_tls_key_file = /certs/mailman-core-test.axdd.s.uw.edu.key
       smtpd_use_tls = yes
-      smtpd_tls_session_cache_database = btree:$data_directory/smtpd_scache
-      smtp_tls_session_cache_database = btree:$data_directory/smtp_scache
+      smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+      smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
       smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination 
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
