@@ -292,7 +292,8 @@ configmaps:
       #incoming: mailman.mta.exim4.LMTP
       incoming: mailman.mta.postfix.LMTP
       outgoing: mailman.mta.deliver.deliver
-      lmtp_host: ${MAILMAN_HOSTNAME}
+      # lmtp_host: ${MAILMAN_HOSTNAME}
+      lmtp_host: localhost
       lmtp_port: 8024
       smtp_host: ${SMTP_HOST}
       smtp_port: 25

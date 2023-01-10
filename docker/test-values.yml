@@ -276,8 +276,9 @@ podVolumes:
 configmaps:
   postfix-main-tpl:
     main.tpl: |
-      myhostname = mailman-core-prod-test
-      mydomain = test.lists.uw.edu
+      # myhostname = mailman-core-prod-test
+      # mydomain = test.lists.uw.edu
+      myhostname = test.lists.uw.edu
       mail_name = Mailman POC
       smtp_sasl_auth_enable = yes
       smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
@@ -337,7 +338,8 @@ configmaps:
       #incoming: mailman.mta.exim4.LMTP
       incoming: mailman.mta.postfix.LMTP
       outgoing: mailman.mta.deliver.deliver
-      lmtp_host: ${MAILMAN_HOSTNAME}
+      # lmtp_host: ${MAILMAN_HOSTNAME}
+      lmtp_host: localhost
       lmtp_port: 8024
       #smtp_host: ${SMTP_HOST}
       smtp_host: ${MAILMAN_HOSTNAME}
