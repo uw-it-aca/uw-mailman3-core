@@ -315,6 +315,8 @@ configmaps:
       transport_maps = regexp:/app/mailman/var/data/postfix_lmtp
       relay_domains = regexp:/app/mailman/var/data/postfix_domains
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
+      smtp_host_lookup = native,dns
+      lmtp_host_lookup = native,dns
   mailman-tpl:
     mailman.tpl: |
       [paths.master]
@@ -338,8 +340,7 @@ configmaps:
       #incoming: mailman.mta.exim4.LMTP
       incoming: mailman.mta.postfix.LMTP
       outgoing: mailman.mta.deliver.deliver
-      # lmtp_host: ${MAILMAN_HOSTNAME}
-      lmtp_host: localhost
+      lmtp_host: ${MAILMAN_HOSTNAME}
       lmtp_port: 8024
       #smtp_host: ${SMTP_HOST}
       smtp_host: ${MAILMAN_HOSTNAME}
