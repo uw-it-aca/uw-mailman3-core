@@ -284,16 +284,13 @@ podVolumes:
 configmaps:
   postfix-main-tpl:
     main.tpl: |
-      # myhostname = mailman-core-prod-test
-      # mydomain = test.lists.uw.edu
       myhostname = test.lists.uw.edu
-      mail_name = Mailman POC
+      mail_name = "UW Mailman Test"
       smtp_sasl_auth_enable = yes
       smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
       smtp_sasl_security_options = noanonymous
       smtp_tls_security_level = encrypt
       relayhost = ${SMTP_RELAY}:587
-      # relay_domains = uw.edu
       mail_owner = postfix
       setgid_group = postdrop
       maillog_file = /dev/stdout
@@ -309,7 +306,7 @@ configmaps:
       smtpd_use_tls = yes
       smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
       smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination 
+      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, $mydomain, localhost, localhost.localdomain
@@ -321,6 +318,7 @@ configmaps:
       inet_interfaces = all
       inet_protocols = ipv4
       transport_maps = regexp:/app/mailman/var/data/postfix_lmtp
+      local_recipient_maps = regexp:/app/mailman/var/data/postfix_lmtp
       relay_domains = regexp:/app/mailman/var/data/postfix_domains
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
       smtp_host_lookup = native,dns
