@@ -346,7 +346,7 @@ configmaps:
       smtpd_use_tls = yes
       smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
       smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
+      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination, permit_sasl_authenticated
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, $mydomain, localhost, localhost.localdomain
@@ -441,6 +441,16 @@ configmaps:
       [logging.root]
       path: /dev/stdout
       level: debug
+      [logging.bounce]
+      path: /dev/stdout
+      [logging.debug]
+      path: /dev/stdout
+      [logging.plugins]
+      path: /dev/stdout
+      [logging.smtp]
+      path: /dev/stdout
+      [logging.runner]
+      path: /dev/stdout
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
