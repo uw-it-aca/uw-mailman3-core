@@ -355,6 +355,8 @@ configmaps:
       configuration: /app/mailman/var/etc/postfix-mailman.cfg
       [mailman]
       site_owner: ${MAILMAN_SITE_OWNER}
+      [logging.template]
+      path: /dev/stdout
       [logging.root]
       path: /dev/stdout
       level: debug
