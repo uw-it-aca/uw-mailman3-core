@@ -151,9 +151,7 @@ sidecarContainers:
   hyperkitty-cron:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:657aa8f"
     command:
-      - "sh"
-      - "-c"
-      - '/scripts/hyperkitty_jobs.sh'
+      - /scripts/hyperkitty_jobs.sh
     resources:
       limits:
         cpu: 500m
