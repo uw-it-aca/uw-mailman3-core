@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, feature/hyperkitty-cron-sidecar]
   pull_request:
     branches: [main, develop]
     types: [opened, reopened, synchronize]
@@ -80,7 +80,7 @@ jobs:
 
       - name: Develop Deployment Pipeline
         if: >-
-          contains(fromJSON('["develop"]'),
+          contains(fromJSON('["develop", "feature/hyperkitty-cron-sidecar"]'),
             needs.context.outputs.git_repo_branch)
         uses: uw-it-aca/actions/cicd-deploy@main
         with:
@@ -109,7 +109,7 @@ jobs:
         run: echo "::set-output name=context::$(< ${CONTEXT_FILENAME})"
 
   housekeeping:
-    if: github.event_name == 'push'
+    if: github.event_name == 'xxx_push'
 
     needs: [context, build, deploy]
 
