@@ -113,18 +113,6 @@ externalSecrets:
           property: key
         - name: mailman-core-test.axdd.s.uw.edu.cert
           property: cert
-    - name: test.lists.uw.edu-sql-secret
-      externalKey: mailman/web/test/sql-secret
-      data:
-        - name: username
-          property: sql_user
-        - name: password
-          property: sql_pass
-    - name: test.lists.uw.edu-secrets
-      externalKey: mailman/web/test/secrets
-      data:
-        - name: django-secret
-          property: django-secret
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
