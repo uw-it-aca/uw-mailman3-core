@@ -401,6 +401,16 @@ configmaps:
       [logging.root]
       path: /dev/stdout
       level: debug
+      [logging.bounce]
+      path: /dev/stdout
+      [logging.debug]
+      path: /dev/stdout
+      [logging.plugins]
+      path: /dev/stdout
+      [logging.smtp]
+      path: /dev/stdout
+      [logging.runner]
+      path: /dev/stdout
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
