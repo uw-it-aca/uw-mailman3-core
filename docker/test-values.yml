@@ -136,6 +136,28 @@ environmentVariablesSecrets:
     secretKey: smtp-host
 
 sidecarContainers:
+  hyperkitty-cron:
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:c2e7847"
+    command:
+      - /scripts/hyperkitty_jobs.sh
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    environmentVariables:
+      - name: DJANGO_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-secrets
+            key: django-secret
+      - name: HYPERKITTY_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: hyperkitty-api-key
   postfix:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:14860b8"
     resources:
