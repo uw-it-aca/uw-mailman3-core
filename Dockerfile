@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as uw-mailman-core
+FROM ubuntu:20.04 as uw-mailman-core
 WORKDIR /app/
 
 RUN apt-get update -y && \
