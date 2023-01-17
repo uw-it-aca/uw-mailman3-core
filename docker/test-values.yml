@@ -148,6 +148,28 @@ sidecarContainers:
         cpu: 50m
         memory: 256Mi
     environmentVariables:
+      - name: ENV
+        value: dev
+      - name: DB
+        value: postgres
+      - name: DATABASE_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-sql-secret
+            key: username
+      - name: DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-sql-secret
+            key: password
+      - name: DATABASE_DB_NAME
+        value: mailmanweb
+      - name: DATABASE_HOSTNAME
+        value: mailman-web-db-test-service
+      - name: MAILMAN_REST_URL
+        value: http://mailman-core-prod-test
+      - name: MAILMAN_ARCHIVER_FROM
+        value: mailman-core-prod-test
       - name: DJANGO_SECRET
         valueFrom:
           secretKeyRef:
