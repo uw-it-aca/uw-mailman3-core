@@ -58,8 +58,6 @@ metrics:
   pushgateway:
     enabled: true
     replicaCount: 1
-cronjob:
-  enabled: true
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
@@ -138,6 +136,50 @@ environmentVariablesSecrets:
     secretKey: smtp-host
 
 sidecarContainers:
+  hyperkitty-cron:
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:70c6fd9"
+    command:
+      - /scripts/hyperkitty_jobs.sh
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    environmentVariables:
+      - name: ENV
+        value: dev
+      - name: DB
+        value: postgres
+      - name: DATABASE_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-sql-secret
+            key: username
+      - name: DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-sql-secret
+            key: password
+      - name: DATABASE_DB_NAME
+        value: mailmanweb
+      - name: DATABASE_HOSTNAME
+        value: mailman-web-db-test-service
+      - name: MAILMAN_REST_URL
+        value: http://mailman-core-prod-test
+      - name: MAILMAN_ARCHIVER_FROM
+        value: mailman-core-prod-test
+      - name: DJANGO_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: test.lists.uw.edu-secrets
+            key: django-secret
+      - name: HYPERKITTY_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: hyperkitty-api-key
   postfix:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:14860b8"
     resources:
@@ -214,7 +256,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix, mailman-backup ]
+    containers: [ base, postfix, hyperkitty-cron, mailman-backup ]
   var-spool-postfix:
     volume:
       claimTemplate:
@@ -280,6 +322,14 @@ podVolumes:
       mountPath: /config/backup.cron
       subPath: backup.cron
     containers: [ mailman-backup ]
+  hyperkitty-cron-schedule:
+    volume:
+      configMap:
+        name: hyperkitty-cron-schedule
+    mount:
+      mountPath: /config/hyperkitty.cron
+      subPath: hyperkitty.cron
+    containers: [ hyperkitty-cron ]
 
 configmaps:
   postfix-main-tpl:
@@ -306,7 +356,7 @@ configmaps:
       smtpd_use_tls = yes
       smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
       smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
+      smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination, permit_sasl_authenticated
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, $mydomain, localhost, localhost.localdomain
@@ -398,13 +448,25 @@ configmaps:
       configuration: /app/mailman/var/etc/postfix-mailman.cfg
       [mailman]
       site_owner: ${MAILMAN_SITE_OWNER}
+      [logging.template]
+      path: /dev/stdout
       [logging.root]
       path: /dev/stdout
       level: debug
+      [logging.bounce]
+      path: /dev/stdout
+      [logging.debug]
+      path: /dev/stdout
+      [logging.plugins]
+      path: /dev/stdout
+      [logging.smtp]
+      path: /dev/stdout
+      [logging.runner]
+      path: /dev/stdout
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
-      base_url: ${HYPERKITTY_BASE_URL}/hyperkitty/
+      base_url: http://${MAILMAN_HOSTNAME}/hyperkitty/
       api_key: ${HYPERKITTY_API_KEY}
   gunicorn-tpl:
     gunicorn.tpl: |
@@ -419,3 +481,18 @@ configmaps:
   mailman-backup-schedule:
     backup.cron: |
       10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
+  hyperkitty-cron-schedule:
+    hyperkitty.cron: |
+      # This goes in /etc/cron.d/.
+      # Replace "apache" by your webserver user ("www-data" on Debian systems) and
+      # set the path to the Django project directory
+      @hourly   /app/scripts/hyperkitty_cron hourly
+      @daily    /app/scripts/hyperkitty_cron daily
+      @weekly   /app/scripts/hyperkitty_cron weekly
+      @monthly  /app/scripts/hyperkitty_cron monthly
+      @yearly   /app/scripts/hyperkitty_cron yearly
+      # Currently Hyperkitty has no minutely and quarter_hourly jobs.  The purpose of
+      # the next lines is to ease the upgrading process, in the eventual case that
+      # Hyperkitty will utilize minutely or quarter_hourly jobs.
+      2,17,32,47 * * * * /app/scripts/hyperkitty_cron quarter_hourly
+      * * * * *  /app/scripts/hyperkitty_cron minutely
