@@ -24,7 +24,7 @@ securityPolicy:
 readiness:
   enabled: true
 database:
-  engine: postgres
+  engine: postgresql
   name: mailman
   hostname: mailman-core-db-test-service
   secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
