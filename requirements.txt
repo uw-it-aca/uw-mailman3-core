@@ -1,5 +1,5 @@
-mailman==3.3.6
-mailman-hyperkitty==1.2.0
+mailman==3.3.8
+mailman-hyperkitty==1.2.1
 gunicorn==19.9.0
 psycopg2>=2.8,<2.9
 pylibmc
