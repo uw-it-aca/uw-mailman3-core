@@ -14,7 +14,7 @@ then
 else
     # url: postgres://mailman:mailmanpass@database/mailman
     export DATABASE_CLASS="class: mailman.database.postgresql.PostgreSQLDatabase"
-    export DATABASE_URL="url: postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
+    export DATABASE_URL="url: postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
 fi
 
 ## copy config files into place inserting secrets
