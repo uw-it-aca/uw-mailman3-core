@@ -1,5 +1,8 @@
-FROM ubuntu:18.04 as uw-mailman-core
+FROM ubuntu:20.04 as uw-mailman-core
 WORKDIR /app/
+ENV PYTHONUNBUFFERED 1
+ENV TZ America/Los_Angeles
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
