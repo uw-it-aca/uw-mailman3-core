@@ -9,6 +9,9 @@ containerPorts:
     - name: http
       containerPort: 8000
       protocol: TCP
+    - name: lmtp
+      containerPort: 8024
+      protocol: TCP
     - name: smtp
       containerPort: 25
       protocol: TCP
@@ -466,7 +469,7 @@ configmaps:
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
-      base_url: http://${MAILMAN_HOSTNAME}/hyperkitty/
+      base_url: http://${MAILMAN_HOSTNAME}:8000/hyperkitty/
       api_key: ${HYPERKITTY_API_KEY}
   gunicorn-tpl:
     gunicorn.tpl: |
