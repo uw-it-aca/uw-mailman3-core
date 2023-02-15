@@ -428,7 +428,7 @@ configmaps:
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
-      base_url: http://${MAILMAN_HOSTNAME}:8000/hyperkitty/
+      base_url: http://mailman-web-prod-prod/hyperkitty/
       api_key: ${HYPERKITTY_API_KEY}
   gunicorn-tpl:
     gunicorn.tpl: |
