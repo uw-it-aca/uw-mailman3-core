@@ -439,6 +439,8 @@ configmaps:
       path: /dev/stdout
       [logging.runner]
       path: /dev/stdout
+      [logging.task]
+      path: /dev/stdout
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
