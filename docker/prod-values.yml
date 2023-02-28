@@ -303,6 +303,7 @@ configmaps:
   postfix-main-tpl:
     main.tpl: |
       myhostname = lists.uw.edu
+      mydomain = lists.uw.edu
       mail_name = "UW Mailman"
       mail_owner = postfix
       setgid_group = postdrop
