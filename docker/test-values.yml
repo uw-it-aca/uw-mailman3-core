@@ -363,8 +363,6 @@ configmaps:
       alias_maps = hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, $mydomain, localhost, localhost.localdomain
-      mynetworks_style = host
-      mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
       mailbox_size_limit = 0
       recipient_delimiter = +
       unknown_local_recipient_reject_code = 550
@@ -486,7 +484,7 @@ configmaps:
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
-      base_url: http://mailman-web-prod-test/hyperkitty/
+      base_url: http://${MAILMAN_HOSTNAME}/hyperkitty/
       api_key: ${HYPERKITTY_API_KEY}
   gunicorn-tpl:
     gunicorn.tpl: |
