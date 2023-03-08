@@ -140,7 +140,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:70c6fd9"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:a44ad3d"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:
