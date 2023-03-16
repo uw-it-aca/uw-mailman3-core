@@ -488,7 +488,6 @@ configmaps:
       level: debug
       [logging.runner]
       path: /dev/stdout
-      level: debug
       [logging.smtp]
       path: /dev/stdout
       level: debug
