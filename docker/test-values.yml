@@ -333,6 +333,14 @@ podVolumes:
       mountPath: /config/hyperkitty.cron
       subPath: hyperkitty.cron
     containers: [ hyperkitty-cron ]
+  core-cron-schedule:
+    volume:
+      configMap:
+        name: core-cron-schedule
+    mount:
+      mountPath: /config/core.cron
+      subPath: core.cron
+    containers: [ base ]
 
 configmaps:
   postfix-main-tpl:
@@ -520,7 +528,10 @@ configmaps:
       # Hyperkitty will utilize minutely or quarter_hourly jobs.
       2,17,32,47 * * * * /app/scripts/hyperkitty_cron quarter_hourly
       * * * * *  /app/scripts/hyperkitty_cron minutely
+  core-cron-schedule:
+    core.cron: |
       # core crons
-      0 12 * * * /app/mailman/bin/mailman digests --periodic
-      0 10 * * * /app/mailman/bin/mailman notify
-#
+#      0 12 * * * /app/mailman/bin/mailman digests --periodic
+      0 14 * * * /app/mailman/bin/mailman digests --periodic
+#      0 9 * * * /app/mailman/bin/mailman notify
+      0 15 * * * /app/mailman/bin/mailman notify

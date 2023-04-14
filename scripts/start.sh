@@ -42,7 +42,11 @@ do
          }1' < $CFG_TEMPLATE_IN  > ${CONFIG_FILE_DIRECTORY}/$(basename -s .${CONFIG_TEMPLATE_EXTENSION} $CFG_TEMPLATE_IN).${CONFIG_FILE_EXTENSION}
 done
 
-source "/app/mailman/bin/activate"
+corntab /config/core-cron
+echo "crontab -l"
+crontab -l
+
+souroe "/app/mailman/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
 /app/mailman/bin/mailman aliases
