@@ -480,3 +480,6 @@ configmaps:
       # Hyperkitty will utilize minutely or quarter_hourly jobs.
       2,17,32,47 * * * * /app/scripts/hyperkitty_cron quarter_hourly
       * * * * *  /app/scripts/hyperkitty_cron minutely
+     # core crons
+     0 12 * * * /app/mailman/bin/mailman digests --periodic
+     0 9 * * * /app/mailman/bin/mailman notify
