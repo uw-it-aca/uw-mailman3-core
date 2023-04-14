@@ -42,7 +42,7 @@ do
          }1' < $CFG_TEMPLATE_IN  > ${CONFIG_FILE_DIRECTORY}/$(basename -s .${CONFIG_TEMPLATE_EXTENSION} $CFG_TEMPLATE_IN).${CONFIG_FILE_EXTENSION}
 done
 
-crontab /config/core-cron
+crontab /config/core.cron
 echo "crontab -l"
 crontab -l
 
