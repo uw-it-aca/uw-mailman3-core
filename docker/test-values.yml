@@ -531,7 +531,7 @@ configmaps:
   core-cron-schedule:
     core.cron: |
       # core crons
-#      0 12 * * * /app/mailman/bin/mailman digests --periodic
+      #      0 12 * * * /app/mailman/bin/mailman digests --periodic
       0 14 * * * /app/mailman/bin/mailman digests --periodic
-#      0 9 * * * /app/mailman/bin/mailman notify
+      #      0 9 * * * /app/mailman/bin/mailman notify
       0 15 * * * /app/mailman/bin/mailman notify
