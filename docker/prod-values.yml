@@ -298,6 +298,14 @@ podVolumes:
       mountPath: /config/hyperkitty.cron
       subPath: hyperkitty.cron
     containers: [ hyperkitty-cron ]
+ core-cron-schedule:
+   volume:
+     configMap:
+       name: core-cron-schedule
+   mount:
+     mountPath: /config/core.cron
+     subPath: core.cron
+   containers: [ base ]
 
 configmaps:
   postfix-main-tpl:
@@ -483,3 +491,8 @@ configmaps:
      # core crons
      0 12 * * * /app/mailman/bin/mailman digests --periodic
      0 9 * * * /app/mailman/bin/mailman notify
+ core-cron-schedule:
+    core.cron: |
+      # core crons
+      0 12 * * * /app/mailman/bin/mailman digests --periodic
+      0 9 * * * /app/mailman/bin/mailman notify
