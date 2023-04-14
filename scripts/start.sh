@@ -50,7 +50,7 @@ crontab /config/core.cron
 echo "crontab -l"
 crontab -l
 
-souroe "/app/mailman/bin/activate"
+source "/app/mailman/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
 /app/mailman/bin/mailman aliases
