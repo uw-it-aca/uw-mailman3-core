@@ -17,7 +17,6 @@ RUN apt-get update -y && \
     lynx \
     libpq-dev \
     curl \
-    cron \
     postgresql
 
 RUN locale-gen en_US.UTF-8
@@ -52,6 +51,8 @@ ENV MAILMAN_VAR_DIR /app/mailman/var
 
 ADD certs certs
 RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
+
+RUN /sbin/services cron
 
 USER mailman
 
