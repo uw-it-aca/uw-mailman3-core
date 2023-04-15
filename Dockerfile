@@ -52,7 +52,7 @@ ENV MAILMAN_VAR_DIR /app/mailman/var
 ADD certs certs
 RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
 
-RUN /sbin/service cron
+RUN /sbin/service cron start
 
 USER mailman
 
