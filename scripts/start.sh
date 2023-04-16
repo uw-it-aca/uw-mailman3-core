@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+/sbin/service cron start
+
+su mailman
+
 # set dymically for test/prod
 export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
 
@@ -49,6 +53,8 @@ echo 'crontab /config/core.cron'
 crontab /config/core.cron
 echo "crontab -l"
 crontab -l
+#echo '/sbin/service cron start'
+#/sbin/service cron start
 
 source "/app/mailman/bin/activate"
 
