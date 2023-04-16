@@ -1,16 +1,6 @@
 #!/bin/bash
 set -e
 
-/sbin/service cron start
-
-su mailman
-
-echo "me: $(whoami)"
-
-ps auwwx
-
-exit
-
 # set dymically for test/prod
 export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
 
