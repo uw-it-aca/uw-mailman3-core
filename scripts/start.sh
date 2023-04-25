@@ -50,6 +50,8 @@ crontab /config/core.cron
 echo "crontab -l"
 crontab -l
 
+/etc/init.d/cron start
+
 source "/app/mailman/bin/activate"
 
 # Generate the LMTP files for postfix if needed.
