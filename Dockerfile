@@ -26,10 +26,6 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-ENV PORT 8000
-ENV MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
-ENV MAILMAN_VAR_DIR /app/mailman/var
-
 # create mailman directory, prep virtualenv
 RUN python3 -m venv /app/mailman
 
@@ -47,6 +43,10 @@ RUN chown -R mailman:mailman /app /app/mailman requirements.txt && \
 RUN . /app/mailman/bin/activate && \
     pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
+
+ENV PORT 8000
+ENV MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
+ENV MAILMAN_VAR_DIR /app/mailman/var
 
 ADD certs certs
 RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
