@@ -530,8 +530,8 @@ configmaps:
       * * * * *  /app/scripts/hyperkitty_cron minutely
   core-cron-schedule:
     core.cron: |
-      # MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
-      # MAILMAN_VAR_DIR /app/mailman/var
+      MAILMAN_CONFIG_FILE=/app/mailman/var/etc/mailman.cfg
+      MAILMAN_VAR_DIR=/app/mailman/var
       # core crons
       0 9 * * * /app/mailman/bin/mailman notify
       0 12 * * * /app/mailman/bin/mailman digests --periodic
