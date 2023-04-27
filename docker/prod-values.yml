@@ -488,11 +488,10 @@ configmaps:
       # Hyperkitty will utilize minutely or quarter_hourly jobs.
       2,17,32,47 * * * * /app/scripts/hyperkitty_cron quarter_hourly
       * * * * *  /app/scripts/hyperkitty_cron minutely
-     # core crons
-     0 12 * * * /app/mailman/bin/mailman digests --periodic
-     0 9 * * * /app/mailman/bin/mailman notify
  core-cron-schedule:
     core.cron: |
+      MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg
+      MAILMAN_VAR_DIR /app/mailman/var
       # core crons
-      0 12 * * * /app/mailman/bin/mailman digests --periodic
       0 9 * * * /app/mailman/bin/mailman notify
+      0 12 * * * /app/mailman/bin/mailman digests --periodic
