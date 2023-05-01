@@ -298,14 +298,14 @@ podVolumes:
       mountPath: /config/hyperkitty.cron
       subPath: hyperkitty.cron
     containers: [ hyperkitty-cron ]
- core-cron-schedule:
-   volume:
-     configMap:
-       name: core-cron-schedule
-   mount:
-     mountPath: /config/core.cron
-     subPath: core.cron
-   containers: [ base ]
+  core-cron-schedule:
+    volume:
+      configMap:
+        name: core-cron-schedule
+    mount:
+      mountPath: /config/core.cron
+      subPath: core.cron
+    containers: [ base ]
 
 configmaps:
   postfix-main-tpl:
