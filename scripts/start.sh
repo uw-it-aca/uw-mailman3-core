@@ -22,6 +22,7 @@ CONFIG_FILE_DIRECTORY=/app/mailman/var/etc
 CONFIG_TEMPLATE_DIRECTORY=/config
 CONFIG_TEMPLATE_EXTENSION=tpl
 CONFIG_FILE_EXTENSION=cfg
+date
 echo "me: $(whoami)"
 echo "ls -ld /app"
 ls -ld /app
@@ -41,6 +42,13 @@ do
            }
          }1' < $CFG_TEMPLATE_IN  > ${CONFIG_FILE_DIRECTORY}/$(basename -s .${CONFIG_TEMPLATE_EXTENSION} $CFG_TEMPLATE_IN).${CONFIG_FILE_EXTENSION}
 done
+
+echo 'crontab /config/core.cron'
+crontab /config/core.cron
+echo "crontab -l"
+crontab -l
+
+/etc/init.d/cron start
 
 source "/app/mailman/bin/activate"
 

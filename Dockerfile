@@ -26,7 +26,6 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-
 # create mailman directory, prep virtualenv
 RUN python3 -m venv /app/mailman
 
@@ -51,6 +50,8 @@ ENV MAILMAN_VAR_DIR /app/mailman/var
 
 ADD certs certs
 RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
+
+RUN chmod u+s /usr/sbin/cron && touch /var/run/crond.pid /var/log/cron.log
 
 USER mailman
 
