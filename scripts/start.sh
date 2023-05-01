@@ -7,7 +7,7 @@ export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
 # setup database for the provided environment
 if [ "$ENV" = "localdev" ]
 then
-    mkdir /app/database
+    mkdir -p /app/database
     chown mailman:mailman /app/database
     export DATABASE_CLASS=""
     export DATABASE_URL="url: sqlite:////app/database/sqlite.db"
@@ -33,8 +33,10 @@ ls -ld /app/mailman/var
 echo "ls -l /app/mailman/var"
 ls -l /app/mailman/var
 mkdir -p $CONFIG_FILE_DIRECTORY
-for CFG_TEMPLATE_IN in $(echo ${CONFIG_TEMPLATE_DIRECTORY}/*.${CONFIG_TEMPLATE_EXTENSION})
+
+for CFG_TEMPLATE_IN in ${CONFIG_TEMPLATE_DIRECTORY}/*.${CONFIG_TEMPLATE_EXTENSION}
 do
+    [ -f "$CFG_TEMPLATE_IN" ] || continue
     awk '{
            while (match($0,"[$]{[^}]*}")) {
              var = substr($0,RSTART+2,RLENGTH -3)
@@ -43,12 +45,18 @@ do
          }1' < $CFG_TEMPLATE_IN  > ${CONFIG_FILE_DIRECTORY}/$(basename -s .${CONFIG_TEMPLATE_EXTENSION} $CFG_TEMPLATE_IN).${CONFIG_FILE_EXTENSION}
 done
 
-echo 'crontab /config/core.cron'
-crontab /config/core.cron
-echo "crontab -l"
-crontab -l
-
-/etc/init.d/cron start
+CONFIG_CORE_CRON=/config/core.cron
+if [ -f "$CONFIG_CORE_CRON" ]
+then
+    echo "crontab $CONFIG_CORE_CRON"
+    crontab $CONFIG_CORE_CRON
+    echo "crontab -l"
+    crontab -l
+    echo "starting cron"
+    /etc/init.d/cron start
+else
+    echo "No core cron: $CONFIG_CORE_CRON"
+fi
 
 source "/app/mailman/bin/activate"
 
