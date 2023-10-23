@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as uw-mailman-core
+FROM ubuntu:22.04 as uw-mailman-core
 WORKDIR /app/
 ENV PYTHONUNBUFFERED 1
 ENV TZ America/Los_Angeles
