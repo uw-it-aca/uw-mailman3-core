@@ -15,6 +15,9 @@ containerPorts:
     - name: smtp
       containerPort: 25
       protocol: TCP
+    - name: metrics
+      containerPort: 9091
+      protocol: TCP
 services:
   LoadBalancer:
     ports:
@@ -58,7 +61,7 @@ metrics:
   enabled: true
   serviceMonitor:
     enabled: true
-    port: 9091
+    port: metrics
   pushgateway:
     enabled: true
     replicaCount: 1
