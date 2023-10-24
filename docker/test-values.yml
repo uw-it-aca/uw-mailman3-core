@@ -22,7 +22,7 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
-service:
+x_service:
   enabled: true
   ports:
     - port: 9091
