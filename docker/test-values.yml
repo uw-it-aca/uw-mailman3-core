@@ -22,17 +22,6 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
-x_service:
-  enabled: true
-  ports:
-    - port: 9091
-      targetPort: metrics
-      name: metrics
-metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-    port: 9091
 securityPolicy:
   enabled: false
 readiness:
@@ -68,7 +57,8 @@ gcsCredentials:
 metrics:
   enabled: true
   serviceMonitor:
-    enabled: false
+    enabled: true
+    port: 9091
   pushgateway:
     enabled: true
     replicaCount: 1
