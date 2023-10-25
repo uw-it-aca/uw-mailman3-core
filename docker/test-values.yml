@@ -18,6 +18,15 @@ containerPorts:
     - name: metrics
       containerPort: 9091
       protocol: TCP
+service:
+  enabled: true
+  ports:
+    - port: 80
+      targetPort: http
+      name: http
+    - port: 9091
+      targetPort: metrics
+      name: metrics
 services:
   LoadBalancer:
     ports:
