@@ -144,7 +144,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   metrics:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:4ef5386"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:8a1ed63"
     resources:
       limits:
         cpu: 250m
@@ -154,9 +154,15 @@ sidecarContainers:
         memory: 64Mi
     environmentVariables:
       - name: MAILMAN_ADMIN_USER
-        value: mailman-admin-user
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: mailman-admin-user
       - name: MAILMAN_ADMIN_PASSWORD
-        value: mailman-admin-password
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: mailman-admin-password
   hyperkitty-cron:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:a44ad3d"
     command:
