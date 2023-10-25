@@ -25,6 +25,12 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
+  Metrics:
+    ports:
+      - port: 9091
+        targetPort: 9091
+        protocol: TCP
+        name: metrics
 securityPolicy:
   enabled: false
 readiness:
