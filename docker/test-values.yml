@@ -153,7 +153,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   metrics:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:6e0c3b7"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:782ed4a"
     resources:
       limits:
         cpu: 250m
