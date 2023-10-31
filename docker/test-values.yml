@@ -16,11 +16,7 @@ containerPorts:
       containerPort: 25
       protocol: TCP
 service:
-  enabled: true
-  ports:
-    - port: 80
-      targetPort: http
-      name: http
+  enabled: false
 services:
   LoadBalancer:
     ports:
@@ -28,8 +24,11 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
-  Metrics:
+  ClusterIP:
     ports:
+      - port: 80
+        targetPort: http
+        name: http
       - port: 9091
         targetPort: metrics
         name: metrics
