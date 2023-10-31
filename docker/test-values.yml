@@ -15,18 +15,12 @@ containerPorts:
     - name: smtp
       containerPort: 25
       protocol: TCP
-    - name: metrics
-      containerPort: 9091
-      protocol: TCP
 service:
   enabled: true
   ports:
     - port: 80
       targetPort: http
       name: http
-    - port: 9091
-      targetPort: metrics
-      name: metrics
 services:
   LoadBalancer:
     ports:
@@ -34,6 +28,11 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
+  Metrics:
+    ports:
+      - port: 9091
+        targetPort: metrics
+        name: metrics
 securityPolicy:
   enabled: false
 readiness:
@@ -71,9 +70,6 @@ metrics:
   serviceMonitor:
     enabled: true
     port: metrics
-  pushgateway:
-    enabled: true
-    replicaCount: 1
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
@@ -154,6 +150,10 @@ environmentVariablesSecrets:
 sidecarContainers:
   metrics:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:782ed4a"
+    ports:
+      - name: metrics
+        containerPort: 9091
+        protocol: TCP
     resources:
       limits:
         cpu: 250m
