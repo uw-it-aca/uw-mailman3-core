@@ -507,6 +507,8 @@ configmaps:
       path: /dev/stdout
       [logging.fromusenet]
       path: /dev/stdout
+      [logging.gunicorn]
+      path: /dev/stdout
       [logging.http]
       path: /dev/stdout
       [logging.mischief]
