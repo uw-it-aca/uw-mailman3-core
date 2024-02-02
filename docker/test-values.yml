@@ -172,7 +172,7 @@ sidecarContainers:
             name: mailman-core-test.axdd.s.uw.edu-shared-secrets
             key: mailman-admin-password
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:a44ad3d"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:8e49c6b"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:

@@ -157,7 +157,7 @@ sidecarContainers:
         cpu: 500m
         memory: 256Mi
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:8e49c6b"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:8ffd3bf"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:
