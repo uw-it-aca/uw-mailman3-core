@@ -302,17 +302,6 @@ podVolumes:
     mount:
       mountPath: /var/spool/postfix
     containers: [ base, postfix ]
-  opt-mailman-web-data:
-    volume:
-      claimTemplate:
-        accessModes:
-          - ReadWriteOnce
-          - ReadOnlyMany
-        storageClassName: standard
-        storageSize: 5Gi
-    mount:
-      mountPath: /opt/mailman-web-data
-    containers: [ hyperkitty-cron ]
   postfix-config:
     volume:
       configMap:
