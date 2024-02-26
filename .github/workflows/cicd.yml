@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, feature/archive-index-pvc]
   pull_request:
     branches: [main, develop]
     types: [opened, reopened, synchronize]
@@ -80,7 +80,7 @@ jobs:
 
       - name: Develop Deployment Pipeline
         if: >-
-          contains(fromJSON('["develop"]'),
+          contains(fromJSON('["develop", "feature/archive-index-pvc"]'),
             needs.context.outputs.git_repo_branch)
         uses: uw-it-aca/actions/cicd-deploy@main
         with:
@@ -88,6 +88,7 @@ jobs:
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
           commit_hash: ${{ needs.context.outputs.commit_hash }}
           git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
+          helm_chart_branch: feature/pvc-nfs-server
 
       - name: Main Deployment Pipeline
         if: >-
