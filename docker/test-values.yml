@@ -33,7 +33,7 @@ services:
         targetPort: metrics
         name: metrics
 securityPolicy:
-  enabled: true
+  enabled: false
 readiness:
   enabled: true
 database:
