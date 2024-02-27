@@ -283,8 +283,8 @@ sidecarContainers:
 
 nfsServer:
   enabled: true
-  capacity: 10Gi
   name: archive-index
+  capacity: 10Gi
 
 podVolumes:
   var-mailman:
