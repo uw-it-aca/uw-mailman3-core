@@ -283,7 +283,7 @@ sidecarContainers:
 
 nfsServer:
   enabled: true
-  name: "archive-index"
+  name: archive-index
   capacity: 10Gi
 
 podVolumes:
