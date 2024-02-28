@@ -281,6 +281,11 @@ sidecarContainers:
 #      - "-c"
 #      - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:${SMTP_SERVER}:25'
 
+nfsServer:
+  enabled: true
+  name: archive-index
+  capacity: 10Gi
+
 podVolumes:
   var-mailman:
     volume:
@@ -302,6 +307,13 @@ podVolumes:
     mount:
       mountPath: /var/spool/postfix
     containers: [ base, postfix ]
+  opt-mailman-web-data:
+    volume:
+      persistentVolumeClaim:
+        claimName: mailman-core-prod-test-nfs-server-archive-index
+    mount:
+      mountPath: /opt/mailman-web-data
+    containers: [ base, hyperkitty-cron ]
   postfix-config:
     volume:
       configMap:
