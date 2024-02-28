@@ -145,6 +145,15 @@ environmentVariablesSecrets:
     name: SMTP_HOST
     secretName: mailman-core-test.axdd.s.uw.edu-secrets
     secretKey: smtp-host
+initContainers:
+  share-drive-permissions:
+    image: alpine
+    securityContext:
+      runAsUser: 0
+    command:
+      - "sh"
+      - "-c"
+      - "/scripts/initialize.sh"
 
 sidecarContainers:
   metrics:
@@ -313,7 +322,7 @@ podVolumes:
         claimName: mailman-core-prod-test-nfs-server-archive-index
     mount:
       mountPath: /opt/mailman-web-data
-    containers: [ base, hyperkitty-cron ]
+    containers: [ base, hyperkitty-cron, share-drive-permissions ]
   postfix-config:
     volume:
       configMap:
