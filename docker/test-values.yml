@@ -226,6 +226,16 @@ sidecarContainers:
           secretKeyRef:
             name: mailman-core-test.axdd.s.uw.edu-shared-secrets
             key: hyperkitty-api-key
+      - name: MAILMAN_REST_USER
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: mailman-rest-user
+      - name: MAILMAN_REST_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            key: mailman-rest-password
   postfix:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:ca80684"
     resources:
