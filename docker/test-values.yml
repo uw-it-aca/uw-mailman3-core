@@ -589,11 +589,11 @@ configmaps:
       # This goes in /etc/cron.d/.
       # Replace "apache" by your webserver user ("www-data" on Debian systems) and
       # set the path to the Django project directory
-      @hourly   /app/scripts/hyperkitty_cron hourly
-      @daily    /app/scripts/hyperkitty_cron daily
-      @weekly   /app/scripts/hyperkitty_cron weekly
-      @monthly  /app/scripts/hyperkitty_cron monthly
-      @yearly   /app/scripts/hyperkitty_cron yearly
+      @hourly   /scripts/hyperkitty_cron.sh hourly
+      @daily    /scripts/hyperkitty_cron.sh daily
+      @weekly   /scripts/hyperkitty_cron.sh weekly
+      @monthly  /scripts/hyperkitty_cron.sh monthly
+      @yearly   /scripts/hyperkitty_cron.sh yearly
       # Currently Hyperkitty has no minutely and quarter_hourly jobs.  The purpose of
       # the next lines is to ease the upgrading process, in the eventual case that
       # Hyperkitty will utilize minutely or quarter_hourly jobs.
