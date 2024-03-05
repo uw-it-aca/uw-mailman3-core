@@ -89,6 +89,10 @@ externalSecrets:
           property: mailman-admin-password
         - name: hyperkitty-api-key
           property: hyperkitty-api-key
+        - name: mailman-rest-user
+          property: mailman-admin-user
+        - name: mailman-rest-password
+          property: mailman-admin-password
     - name: mailman-core-test.axdd.s.uw.edu-secrets
       externalKey: axdd/kv/data/mailman/core/test/secrets
       data:
