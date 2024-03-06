@@ -159,7 +159,8 @@ initContainers:
       - -c
       - >
         mkdir -p /opt/mailman-web-data/fulltext_index &&
-        chown -R 1000:1000 /opt/mailman-web-data
+        chown -R 1000:1000 /opt/mailman-web-data &&
+        /etc/init.d/cron start
 
 sidecarContainers:
   metrics:
