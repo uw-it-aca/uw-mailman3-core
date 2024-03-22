@@ -416,10 +416,12 @@ configmaps:
     main.tpl: |
       myhostname = test.lists.uw.edu
       mail_name = "UW Mailman Test"
-      smtp_sasl_auth_enable = yes
-      smtp_sasl_password_maps = static:${SMTP_RELAY_USER}:${SMTP_RELAY_PASSWORD}
-      smtp_sasl_security_options = noanonymous
+      smtp_sasl_auth_enable = no
       smtp_tls_security_level = encrypt
+      smtp_use_tls = yes
+      smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+      smtp_tls_cert_file = /certs/mailman-core-test.axdd.s.uw.edu.cert
+      smtp_tls_key_file = /certs/mailman-core-test.axdd.s.uw.edu.key
       relayhost = ${SMTP_RELAY}:587
       mail_owner = postfix
       setgid_group = postdrop
