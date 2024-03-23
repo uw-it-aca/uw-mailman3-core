@@ -26,17 +26,17 @@ class UWPrivateStyle(LegacyDefaultStyle):
         super().apply(mailing_list)
 
         # Make modifications on top.
-        mlist.display_name = 'UW created with our Style'
+        self.display_name = 'UW created with our Style'
         # Mung From
-        mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        self.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         # do it for everyone
-        mlist.dmarc_mitigate_unconditionally = True
+        self.dmarc_mitigate_unconditionally = True
 
         # archives private and off
-        mlist.archive_policy = 'private'
+        self.archive_policy = 'private'
 
         # up the max message size
-        mlist.max_message_size = 10240
+        self.max_message_size = 10240
 
         # don't adversite
-        mlist.advertised = False
+        self.advertised = False
