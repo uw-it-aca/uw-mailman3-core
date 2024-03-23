@@ -573,7 +573,7 @@ configmaps:
       class: UWPlugins.UWPlugin
       enabled: yes
       [styles]
-      default: UW-March-2024-Default
+      default: UW-March-2024-NoArch
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
