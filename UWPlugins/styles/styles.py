@@ -10,25 +10,21 @@ from zope.interface import implementer
 
 @public
 @implementer(IStyle)
-class UWPrivateStyle(LegacyDefaultStyle):
+class UWStyleArch(LegacyDefaultStyle):
 
     # Provide a unique name to this style so it doesn't clash with the ones
     # defined by default.
-    name = 'UW-March-2024-Default'
+    name = 'UW-March-2024-Arch'
 
     # Provide a usable description that will be shown to the users in Web
     # Interface.
-    description = 'UW discussion mailing list style (March2024).'
+    description = 'UW list with archives (March2024).'
 
-    def apply(self, mailing_list):
-        """See `IStyle`."""
+    def apply(self, mlist):
+
         # Set settings from super class.
-        super().apply(mailing_list)
+        super().apply(mlist)
 
-        mlist = mailing_list
-
-        # Make modifications on top.
-        mlist.display_name = 'UW created with our Style'
         # Mung From
         mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         # do it for everyone
@@ -36,6 +32,37 @@ class UWPrivateStyle(LegacyDefaultStyle):
 
         # archives private and off
         mlist.archive_policy = ArchivePolicy.private
+
+        # up the max message size
+        mlist.max_message_size = 10240
+
+        # don't adversite
+        mlist.advertised = False
+
+@public
+@implementer(IStyle)
+class UWStyleNoArch(LegacyDefaultStyle):
+
+    # Provide a unique name to this style so it doesn't clash with the ones
+    # defined by default.
+    name = 'UW-March-2024-NoArch'
+
+    # Provide a usable description that will be shown to the users in Web
+    # Interface.
+    description = 'UW list with NO archives (March2024).'
+
+    def apply(self, mlist):
+
+        # Set settings from super class.
+        super().apply(mlist)
+
+        # Mung From
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        # do it for everyone
+        mlist.dmarc_mitigate_unconditionally = True
+
+        # archives private and off
+        mlist.archive_policy = ArchivePolicy.never
 
         # up the max message size
         mlist.max_message_size = 10240
