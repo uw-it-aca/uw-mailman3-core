@@ -1,8 +1,8 @@
 from public import public
 from mailman.interfaces.styles import IStyle
 from mailman.styles.default import LegacyDefaultStyle
-from mailman.interfaces.mailinglist import (
-    DMARCMitigateAction, ReplyToMunging)
+from mailman.interfaces.mailinglist import DMARCMitigateAction
+from mailman.interfaces.archiver import ArchivePolicy
 from zope.interface import implementer
 
 # Documentation on List styles
@@ -25,18 +25,20 @@ class UWPrivateStyle(LegacyDefaultStyle):
         # Set settings from super class.
         super().apply(mailing_list)
 
+        mlist = mailing_list
+
         # Make modifications on top.
-        self.display_name = 'UW created with our Style'
+        mlist.display_name = 'UW created with our Style'
         # Mung From
-        self.dmarc_mitigate_action = DMARCMitigateAction.munge_from
+        mlist.dmarc_mitigate_action = DMARCMitigateAction.munge_from
         # do it for everyone
-        self.dmarc_mitigate_unconditionally = True
+        mlist.dmarc_mitigate_unconditionally = True
 
         # archives private and off
-        self.archive_policy = 'private'
+        mlist.archive_policy = ArchivePolicy.private
 
         # up the max message size
-        self.max_message_size = 10240
+        mlist.max_message_size = 10240
 
         # don't adversite
-        self.advertised = False
+        mlist.advertised = False
