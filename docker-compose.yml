@@ -75,6 +75,12 @@ services:
         path: /dev/stdout
         [logging.vette]
         path: /dev/stdout
+        # Plugin configuration.
+        [plugin.UWPlugins]
+        class: UWPlugins.UWPlugin
+        enabled: yes
+        [styles]
+        default: UW-March-2024-Default
       POSTFIX_CONFIG_TEMPLATE: |
         [postfix]
         transport_file_type: regex
@@ -90,4 +96,5 @@ services:
        echo "$$HYPERKITTY_CONFIG_TEMPLATE" > /config/mailman-hyperkitty.tpl;
        echo "$$POSTFIX_CONFIG_TEMPLATE" > /config/postfix-mailman.tpl;
        echo "$$GUNICORN_CONFIG_TEMPLATE" > /config/gunicorn.tpl;
+       echo "" > /config/core.cron;
        /scripts/start.sh'
