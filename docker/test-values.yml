@@ -568,6 +568,12 @@ configmaps:
       path: /dev/stdout
       [logging.vette]
       path: /dev/stdout
+      # Plugin configuration.
+      [plugin.UWPlugins]
+      class: UWPlugins.UWPlugin
+      enabled: yes
+      [styles]
+      default: UW-March-2024-Default
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
