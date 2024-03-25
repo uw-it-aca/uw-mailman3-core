@@ -569,8 +569,8 @@ configmaps:
       [logging.vette]
       path: /dev/stdout
       # Plugin configuration.
-      [plugin.UWPlugins]
-      class: UWPlugins.UWPlugin
+      [plugin.uw_mailman3_plugin]
+      class: uw_mailman3_plugin.UWPlugin
       enabled: yes
       [styles]
       default: UW-March-2024-NoArch
