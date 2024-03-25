@@ -16,8 +16,8 @@ RUN apt-get update -y && \
     sassc \
     lynx \
     libpq-dev \
-    curl \
     git \
+    curl \
     postgresql
 
 RUN locale-gen en_US.UTF-8
