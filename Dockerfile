@@ -17,6 +17,7 @@ RUN apt-get update -y && \
     lynx \
     libpq-dev \
     curl \
+    git \
     postgresql
 
 RUN locale-gen en_US.UTF-8
@@ -43,9 +44,6 @@ RUN chown -R mailman:mailman /app /app/mailman /config requirements.txt && \
 RUN . /app/mailman/bin/activate && \
     pip install -U pip setuptools wheel && \
     pip install -r requirements.txt
-
-# this is probably wrong, fix it
-ADD UWPlugins /app/mailman/lib/python3.10/site-packages/UWPlugins
 
 ENV PORT 8000
 ENV MAILMAN_CONFIG_FILE /app/mailman/var/etc/mailman.cfg

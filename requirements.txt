@@ -4,3 +4,4 @@ gunicorn==19.9.0
 psycopg2>=2.8,<2.9
 pylibmc
 Whoosh
+git+https://github.com/uw-it-aca/uw-mailman3-plugin@main#egg=uw-mailman3-plugin
