@@ -16,6 +16,7 @@ RUN apt-get update -y && \
     sassc \
     lynx \
     libpq-dev \
+    git \
     curl \
     postgresql
 
