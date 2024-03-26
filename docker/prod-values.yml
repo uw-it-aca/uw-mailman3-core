@@ -344,6 +344,12 @@ configmaps:
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
       smtp_host_lookup = native,dns
       lmtp_host_lookup = native,dns
+      # relay to mxoutmailman
+      soft_bounce = yes
+      relayhost = mxoutmailman.s.uw.edu
+      smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+      smtp_tls_security_level = encrypt
+      smtp_use_tls = yes 
   postfix-master-tpl:
     master.tpl: |
       # Postfix master process configuration file.  For details on the format
