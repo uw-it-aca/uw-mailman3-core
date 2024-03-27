@@ -152,12 +152,12 @@ sidecarContainers:
     resources:
       limits:
         cpu: "1"
-        memory: 1Gi
+        memory: 3Gi
       requests:
         cpu: 500m
         memory: 256Mi
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:8e49c6b"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:c91c1dc"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:
@@ -344,6 +344,14 @@ configmaps:
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
       smtp_host_lookup = native,dns
       lmtp_host_lookup = native,dns
+      # relay to mxoutmailman
+      soft_bounce = yes
+      relayhost = mxoutmailman.s.uw.edu
+      smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+      smtp_tls_cert_file = /certs/mailman-core-prod.axdd.s.uw.edu.cert
+      smtp_tls_key_file = /certs/mailman-core-prod.axdd.s.uw.edu.key
+      smtp_tls_security_level = encrypt
+      smtp_use_tls = yes 
   postfix-master-tpl:
     master.tpl: |
       # Postfix master process configuration file.  For details on the format
@@ -455,6 +463,12 @@ configmaps:
       path: /dev/stdout
       [logging.vette]
       path: /dev/stdout
+      # Plugin configuration.
+      [plugin.uw_mailman3_plugin]
+      class: uw_mailman3_plugin.UWPlugin
+      enabled: yes
+      [styles]
+      default: UW-March-2024-NoArch
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
