@@ -348,6 +348,8 @@ configmaps:
       soft_bounce = yes
       relayhost = mxoutmailman.s.uw.edu
       smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+      smtp_tls_cert_file = /certs/mailman-core-prod.axdd.s.uw.edu.cert
+      smtp_tls_key_file = /certs/mailman-core-prod.axdd.s.uw.edu.key
       smtp_tls_security_level = encrypt
       smtp_use_tls = yes 
   postfix-master-tpl:
