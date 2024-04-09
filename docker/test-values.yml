@@ -454,6 +454,7 @@ configmaps:
       virtual_alias_maps = regexp:/app/mailman/var/data/postfix_vmap
       smtp_host_lookup = native,dns
       lmtp_host_lookup = native,dns
+      message_size_limit = 40960000
   postfix-master-tpl:
     master.tpl: |
       # Postfix master process configuration file.  For details on the format
