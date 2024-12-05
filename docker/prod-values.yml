@@ -148,7 +148,7 @@ environmentVariablesSecrets:
 
 sidecarContainers:
   postfix:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:ca80684"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:1492018"
     resources:
       limits:
         cpu: "1"
