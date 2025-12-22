@@ -149,9 +149,10 @@ environmentVariablesSecrets:
     name: SMTP_HOST
     secretName: mailman-core-test.axdd.s.uw.edu-secrets
     secretKey: smtp-host
-initContainers:
-  share-drive-permissions:
+sidecarContainers:
+  01-share-drive-permissions:
     image: alpine
+    restartPolicy: Never
     securityContext:
       runAsUser: 0
     command:
@@ -160,8 +161,6 @@ initContainers:
       - >
         mkdir -p /opt/mailman-web-data/fulltext_index &&
         chown -R 1000:1000 /opt/mailman-web-data
-
-sidecarContainers:
   metrics:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:27e0221"
     ports:
