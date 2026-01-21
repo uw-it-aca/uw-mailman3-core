@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Set up Context
         id: context
-        uses: uw-it-aca/actions/cicd-context@92c01e5dfc2d0d8ccd99e82c946fa1af9639465a
+        uses: uw-it-aca/actions/cicd-context@cf02469256844620f1addf847658e40aa0ce1c84
         with:
           release_name: ${{ env.RELEASE_NAME }}
 
@@ -87,7 +87,7 @@ jobs:
         if: >-
           contains(fromJSON('["develop", "task/init-containers-adjustment"]'),
             needs.context.outputs.git_repo_branch)
-        uses: uw-it-aca/actions/cicd-deploy@92c01e5dfc2d0d8ccd99e82c946fa1af9639465a
+        uses: uw-it-aca/actions/cicd-deploy@cf02469256844620f1addf847658e40aa0ce1c84
         with:
           release_name: ${{ env.RELEASE_NAME }}
           release_instance: ${{ matrix.instance }}
@@ -100,7 +100,7 @@ jobs:
         if: >-
           contains(fromJSON('["main"]'),
             needs.context.outputs.git_repo_branch)
-        uses: uw-it-aca/actions/cicd-deploy@92c01e5dfc2d0d8ccd99e82c946fa1af9639465a
+        uses: uw-it-aca/actions/cicd-deploy@cf02469256844620f1addf847658e40aa0ce1c84
         with:
           release_name: ${{ env.RELEASE_NAME }}
           release_instance: ${{ matrix.instance }}
@@ -130,7 +130,7 @@ jobs:
 
     steps:
       - name: House Keeping
-        uses: uw-it-aca/actions/cicd-housekeeping@92c01e5dfc2d0d8ccd99e82c946fa1af9639465a
+        uses: uw-it-aca/actions/cicd-housekeeping@cf02469256844620f1addf847658e40aa0ce1c84
         with:
           release_name: ${{ env.RELEASE_NAME }}-${{ matrix.instance }}
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
