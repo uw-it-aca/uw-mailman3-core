@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, task/init-containers-adjustment]
   pull_request:
     branches: [main, develop]
     types: [opened, reopened, synchronize]
@@ -85,7 +85,7 @@ jobs:
 
       - name: Develop Deployment Pipeline
         if: >-
-          contains(fromJSON('["develop"]'),
+          contains(fromJSON('["develop", "task/init-containers-adjustment"]'),
             needs.context.outputs.git_repo_branch)
         uses: uw-it-aca/actions/cicd-deploy@92c01e5
         with:
