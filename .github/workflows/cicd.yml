@@ -97,7 +97,7 @@ jobs:
           gh_auth_token: ${{ secrets.GH_AUTH_TOKEN }}
           commit_hash: ${{ needs.context.outputs.commit_hash }}
           git_repo_branch: ${{ needs.context.outputs.git_repo_branch }}
-          helm_chart_branch: e126f44
+          helm_chart_branch: feature/repo-identifier
 
       - name: Main Deployment Pipeline
         if: >-
@@ -113,7 +113,7 @@ jobs:
           gcp_production_project: 'uwit-mci-0016'
           gcp_production_flux_instance: 'mailman'
           flux_repo_default_branch: 'main'
-          helm_chart_branch: e126f44
+          helm_chart_branch: feature/repo-identifier
 
       - name: 'Surface context from executed build step'
         id: context
