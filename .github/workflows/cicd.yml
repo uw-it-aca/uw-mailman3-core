@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Set up Context
         id: context
-        uses: uw-it-aca/actions/cicd-context@main
+        uses: uw-it-aca/actions/cicd-context@92c01e5
         with:
           release_name: ${{ env.RELEASE_NAME }}
 
