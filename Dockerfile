@@ -36,7 +36,8 @@ ADD requirements.txt /app/
 ADD scripts /scripts
 
 RUN groupadd -r mailman -g 1000 && \
-    useradd -u 1000 -m -d /app/mailman/var -s /bin/bash -g mailman mailman
+    useradd -u 1000 -m -d /app/mailman/var -s /bin/bash -g mailman mailman && \
+    mkdir -p /app/mailman/var
 
 RUN chown -R mailman:mailman /app /app/mailman /config requirements.txt && \
     chmod -R +x /scripts
