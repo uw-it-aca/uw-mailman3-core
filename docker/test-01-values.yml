@@ -32,8 +32,6 @@ services:
       - port: 9091
         targetPort: metrics
         name: metrics
-securityPolicy:
-  enabled: true
 database:
   engine: postgres
   name: mailman
