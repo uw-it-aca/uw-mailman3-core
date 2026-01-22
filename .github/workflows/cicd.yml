@@ -140,4 +140,4 @@ jobs:
           registry_password: ${{ secrets.GCP_JSON_KEY }}
           context: ${{ needs.deploy.outputs.context }}
           flux_instances: 'mailman,dev'
-          helm_chart_branch: e126f44
+          helm_chart_branch: feature/repo-identifier
