@@ -320,7 +320,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix, hyperkitty-cron, mailman-backup ]
+    containers: [ base, postfix, hyperkitty-cron, mailman-backup, 01-share-drive-permissions ]
   var-spool-postfix:
     volume:
       claimTemplate:
@@ -337,7 +337,7 @@ podVolumes:
         claimName: mailman-core-01-nfs-server-archive-index
     mount:
       mountPath: /opt/mailman-web-data
-    containers: [ base, hyperkitty-cron, share-drive-permissions ]
+    containers: [ base, hyperkitty-cron, 01-share-drive-permissions ]
   postfix-config:
     volume:
       configMap:
