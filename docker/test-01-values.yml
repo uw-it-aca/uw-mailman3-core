@@ -200,11 +200,6 @@ sidecarContainers:
       requests:
         cpu: 50m
         memory: 256Mi
-    environmentVariablesSecrets:
-      djangoSecret:
-        name: DJANGO_SECRET
-        secretName: test01.lists.uw.edu-secrets
-        secretKey: django-secret
     environmentVariables:
       - name: ENV
         value: dev
@@ -228,6 +223,11 @@ sidecarContainers:
         value: http://mailman-core-01
       - name: MAILMAN_ARCHIVER_FROM
         value: mailman-core-01
+      - name: DJANGO_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: test01.lists.uw.edu-secrets
+            key: django-secret
       - name: HYPERKITTY_API_KEY
         valueFrom:
           secretKeyRef:
