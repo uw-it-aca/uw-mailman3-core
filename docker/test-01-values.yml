@@ -208,12 +208,12 @@ sidecarContainers:
       - name: DATABASE_USERNAME
         valueFrom:
           secretKeyRef:
-            name: mailman-web-test.axdd.s.uw.edu-sql-secret
+            name: test01.lists.uw.edu-sql-secret
             key: username
       - name: DATABASE_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: mailman-core-01-test.axdd.s.uw.edu-sql-secret
+            name: test01.lists.uw.edu-sql-secret
             key: password
       - name: DATABASE_DB_NAME
         value: mailmanweb
