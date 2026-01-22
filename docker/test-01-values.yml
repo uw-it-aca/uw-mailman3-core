@@ -33,8 +33,6 @@ services:
         targetPort: metrics
         name: metrics
 securityPolicy:
-  enabled: false
-readiness:
   enabled: true
 database:
   engine: postgres
@@ -155,8 +153,15 @@ environmentVariablesSecrets:
     secretKey: smtp-host
 sidecarContainers:
   '01-share-drive-permissions':
-    image: alpine
+    image: alpine:2.23.2
     restartPolicy: Never
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
     securityContext:
       runAsUser: 0
     command:
@@ -190,7 +195,7 @@ sidecarContainers:
             name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: mailman-admin-password
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:34f2f47"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:0d04ce5"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:
@@ -313,6 +318,7 @@ nfsServer:
   enabled: true
   name: archive-index
   capacity: 10Gi
+  image: us-west1-docker.pkg.dev/uwit-mci-axdd/rttl-images/nfs-server:0.0.1
 
 podVolumes:
   var-mailman:
