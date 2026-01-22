@@ -151,7 +151,7 @@ environmentVariablesSecrets:
     secretKey: smtp-host
 sidecarContainers:
   '01-share-drive-permissions':
-    image: alpine:2.23.2
+    image: alpine
     restartPolicy: Never
     resources:
       limits:
