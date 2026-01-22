@@ -200,6 +200,11 @@ sidecarContainers:
       requests:
         cpu: 50m
         memory: 256Mi
+    environmentVariablesSecrets:
+      djangoSecret:
+        name: DJANGO_SECRET
+        secretName: test01.lists.uw.edu-secrets
+        secretKey: django-secret
     environmentVariables:
       - name: ENV
         value: dev
