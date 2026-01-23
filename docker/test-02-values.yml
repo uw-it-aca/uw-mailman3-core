@@ -63,6 +63,7 @@ image:
   repository: REPO_PATH
   tag: IMAGE_TAG
 gcsCredentials:
+# gcs-credentials secret are created in the core test-01-values.yml
   mounted: true
   secretName: mailman-core-test.axdd.s.uw.edu-gcs-credentials
 metrics:
@@ -108,22 +109,6 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
-# postfix-test-secrets is created in the core test-01-values.yml
-#    - name: postfix-test-secrets
-#      externalKey: postfix/test/secrets
-#      data:
-#        - name: smtp-relay-user
-#          property: smtp-relay-user
-#        - name: smtp-relay-password
-#          property: smtp-relay-password
-#        - name: smtp-relay
-#          property: smtp-relay
-# gcs-credentials secret are created in the core test-01-values.yml
-#    - name: mailman-core-test.axdd.s.uw.edu-gcs-credentials
-#     externalKey: axdd/kv/data/mailman/core/shared/gcs-credentials
-#      data:
-#        - name: credentials.json
-#          property: credentials.json
     - name: mailman-core-02-test.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/test/ic-certs
       data:
@@ -252,6 +237,7 @@ sidecarContainers:
         cpu: 50m
         memory: 256Mi
     environmentVariables:
+# postfix-test-secrets is created in the core test-01-values.yml
       - name: SMTP_RELAY_USER
         valueFrom:
           secretKeyRef:
