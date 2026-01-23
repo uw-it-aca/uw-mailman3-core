@@ -49,6 +49,7 @@ instance: test
 namespace:
   enabled: true
   name: mailman-test
+  suppressDefinition: true
 autoscaling:
   enabled: false
 resources:

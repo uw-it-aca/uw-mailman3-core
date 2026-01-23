@@ -413,7 +413,7 @@ podVolumes:
 configmaps:
   postfix-main-tpl:
     main.tpl: |
-      myhostname = test01.lists.uw.edu
+      myhostname = test.lists.uw.edu
       mail_name = "UW Mailman Test"
       smtp_sasl_auth_enable = no
       smtp_tls_security_level = encrypt
