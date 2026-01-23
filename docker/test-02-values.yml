@@ -108,15 +108,16 @@ externalSecrets:
           property: sql_user
         - name: password
           property: sql_pass
-    - name: postfix-test-secrets
-      externalKey: postfix/test/secrets
-      data:
-        - name: smtp-relay-user
-          property: smtp-relay-user
-        - name: smtp-relay-password
-          property: smtp-relay-password
-        - name: smtp-relay
-          property: smtp-relay
+# postfix-test-secrets is created in the core-01 values file
+#    - name: postfix-test-secrets
+#      externalKey: postfix/test/secrets
+#      data:
+#        - name: smtp-relay-user
+#          property: smtp-relay-user
+#        - name: smtp-relay-password
+#          property: smtp-relay-password
+#        - name: smtp-relay
+#          property: smtp-relay
     - name: mailman-core-test.axdd.s.uw.edu-gcs-credentials
       externalKey: axdd/kv/data/mailman/core/shared/gcs-credentials
       data:
