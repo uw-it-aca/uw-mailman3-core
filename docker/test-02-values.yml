@@ -315,13 +315,13 @@ podVolumes:
     mount:
       mountPath: /var/spool/postfix
     containers: [ base, postfix ]
-  opt-mailman-web-data:
+  mailman-opt-mailman-web-data:
     volume:
-      claimTemplate:
-        accessModes:
-          - ReadWriteMany
+      # pvc named by key above defined in test-01-values.yml and shared
+      # across statefulsets. filesystem is path separated by "subPath"
+      # defined in mount below
+      sharedClaimTemplate:
         storageClassName: standard-rwx
-        storageSize: 10Gi
     mount:
       mountPath: /opt/mailman-web-data
       subPath: "02"
