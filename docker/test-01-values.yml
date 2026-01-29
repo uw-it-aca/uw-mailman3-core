@@ -331,8 +331,8 @@ podVolumes:
       claimTemplate:
         accessModes:
           - ReadWriteMany
-        storageClassName: standard-rwx
-        storageSize: 10Gi
+        storageClassName: basic-hdd-rwx
+        storageSize: 100Gi
     mount:
       mountPath: /opt/mailman-web-data
       subPath: "01"
