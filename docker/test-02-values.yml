@@ -315,7 +315,7 @@ podVolumes:
     mount:
       mountPath: /var/spool/postfix
     containers: [ base, postfix ]
-  mailman-opt-mailman-web-data:
+  mailman-core-01-pvc-opt-mailman-web-data:
     volume:
       # pvc named by key above defined in test-01-values.yml and shared
       # across statefulsets. filesystem is path separated by "subPath"
