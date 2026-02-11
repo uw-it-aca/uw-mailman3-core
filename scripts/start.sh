@@ -8,7 +8,7 @@ export MAILMAN_HOSTNAME=${MAILMAN_HOSTNAME:-$HOSTNAME}
 if [ "$ENV" = "localdev" ]
 then
     mkdir -p /app/database
-    chown mailman:mailman /app/database
+    chown acait:acait /app/database
     export DATABASE_CLASS=""
     export DATABASE_URL="url: sqlite:////app/database/sqlite.db"
 else

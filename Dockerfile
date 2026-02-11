@@ -35,10 +35,10 @@ RUN mkdir /config
 ADD requirements.txt /app/
 ADD scripts /scripts
 
-RUN groupadd -r mailman -g 1000 && \
-    useradd -u 1000 -m -d /app/mailman/var -s /bin/bash -g mailman mailman
+RUN groupadd -r acait -g 1000 && \
+    useradd -u 1000 -m -d /app/mailman/var -s /bin/bash -g acait acait
 
-RUN chown -R mailman:mailman /app /app/mailman /config requirements.txt && \
+RUN chown -R acait:acait /app /app/mailman /config requirements.txt && \
     chmod -R +x /scripts
 
 RUN . /app/mailman/bin/activate && \
@@ -54,6 +54,6 @@ RUN cat certs/uwca.crt >> /etc/ssl/certs/ca-certificates.crt
 
 RUN chmod u+s /usr/sbin/cron && touch /var/run/crond.pid /var/log/cron.log
 
-USER mailman
+USER acait
 
 CMD ["/scripts/start.sh"]

@@ -32,23 +32,23 @@ services:
       - port: 9091
         targetPort: metrics
         name: metrics
-securityPolicy:
-  enabled: false
-readiness:
-  enabled: true
 database:
   engine: postgres
   name: mailman
-  hostname: mailman-core-db-test-service
-  secretName: mailman-core-test.axdd.s.uw.edu-sql-secret
+  hostname: mailman-core-01-db-test-service
+  secretName: mailman-core-01-test.axdd.s.uw.edu-sql-secret
 externalService:
   enabled: true
-  name: mailman-core-db-test-service
+  name: mailman-core-01-db-test-service
   type: ClusterIP
   serviceAddress: 172.18.1.64
   servicePort: 5432
 repo: mailman-core
+repoIdentifier: "01"
 instance: test
+namespace:
+  enabled: true
+  name: mailman-test
 autoscaling:
   enabled: false
 resources:
@@ -73,14 +73,14 @@ certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
   keyPath: /certs/mailman-core-test.axdd.s.uw.edu.key
-  secretName: mailman-core-test.axdd.s.uw.edu-certs
+  secretName: mailman-core-01-test.axdd.s.uw.edu-certs
 environmentVariables:
   - name: ENV
     value: dev
 externalSecrets:
   enabled: true
   secrets:
-    - name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    - name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
       externalKey: mailman/shared/test/secrets
       data:
         - name: mailman-admin-user
@@ -93,14 +93,14 @@ externalSecrets:
           property: mailman-admin-user
         - name: mailman-rest-password
           property: mailman-admin-password
-    - name: mailman-core-test.axdd.s.uw.edu-secrets
+    - name: mailman-core-01-test.axdd.s.uw.edu-secrets
       externalKey: axdd/kv/data/mailman/core/test/secrets
       data:
         - name: mailman-site-owner
           property: mailman-site-owner
         - name: smtp-host
           property: smtp-host
-    - name: mailman-core-test.axdd.s.uw.edu-sql-secret
+    - name: mailman-core-01-test.axdd.s.uw.edu-sql-secret
       externalKey: axdd/kv/data/mailman/core/test/sql-secret
       data:
         - name: username
@@ -121,7 +121,7 @@ externalSecrets:
       data:
         - name: credentials.json
           property: credentials.json
-    - name: mailman-core-test.axdd.s.uw.edu-certs
+    - name: mailman-core-01-test.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/test/ic-certs
       data:
         - name: mailman-core-test.axdd.s.uw.edu.key
@@ -131,27 +131,28 @@ externalSecrets:
 environmentVariablesSecrets:
   mailmanAdminUser:
     name: MAILMAN_ADMIN_USER
-    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretName: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
     secretKey: mailman-admin-user
   mailmanAdminPassword:
     name: MAILMAN_ADMIN_PASSWORD
-    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretName: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
     secretKey: mailman-admin-password
   hyperkittyAPIKey:
     name: HYPERKITTY_API_KEY
-    secretName: mailman-core-test.axdd.s.uw.edu-shared-secrets
+    secretName: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
     secretKey: hyperkitty-api-key
   mailmanSiteOwner:
     name: MAILMAN_SITE_OWNER
-    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretName: mailman-core-01-test.axdd.s.uw.edu-secrets
     secretKey: mailman-site-owner
   smtpHostname:
     name: SMTP_HOST
-    secretName: mailman-core-test.axdd.s.uw.edu-secrets
+    secretName: mailman-core-01-test.axdd.s.uw.edu-secrets
     secretKey: smtp-host
-initContainers:
-  share-drive-permissions:
+sidecarContainers:
+  '01-share-drive-permissions':
     image: alpine
+    restartPolicy: Never
     securityContext:
       runAsUser: 0
     command:
@@ -159,11 +160,9 @@ initContainers:
       - -c
       - >
         mkdir -p /opt/mailman-web-data/fulltext_index &&
-        chown -R 1000:1000 /opt/mailman-web-data
-
-sidecarContainers:
+        chown -R 1000:1000 /opt/mailman-web-data /app/mailman/var
   metrics:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:27e0221"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:e6a240b"
     ports:
       - name: metrics
         containerPort: 9091
@@ -179,15 +178,15 @@ sidecarContainers:
       - name: MAILMAN_ADMIN_USER
         valueFrom:
           secretKeyRef:
-            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: mailman-admin-user
       - name: MAILMAN_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: mailman-admin-password
   hyperkitty-cron:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:34f2f47"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/mailman-web:8f058a9"
     command:
       - /scripts/hyperkitty_jobs.sh
     resources:
@@ -205,40 +204,40 @@ sidecarContainers:
       - name: DATABASE_USERNAME
         valueFrom:
           secretKeyRef:
-            name: test.lists.uw.edu-sql-secret
+            name: test01.lists.uw.edu-sql-secret
             key: username
       - name: DATABASE_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: test.lists.uw.edu-sql-secret
+            name: test01.lists.uw.edu-sql-secret
             key: password
       - name: DATABASE_DB_NAME
         value: mailmanweb
       - name: DATABASE_HOSTNAME
-        value: mailman-web-db-test-service
+        value: mailman-web-01-db-test-service
       - name: MAILMAN_REST_URL
-        value: http://mailman-core-prod-test
+        value: http://mailman-core-01
       - name: MAILMAN_ARCHIVER_FROM
-        value: mailman-core-prod-test
+        value: mailman-core-01
       - name: DJANGO_SECRET
         valueFrom:
           secretKeyRef:
-            name: test.lists.uw.edu-secrets
+            name: test01.lists.uw.edu-secrets
             key: django-secret
       - name: HYPERKITTY_API_KEY
         valueFrom:
           secretKeyRef:
-            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: hyperkitty-api-key
       - name: MAILMAN_REST_USER
         valueFrom:
           secretKeyRef:
-            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: mailman-rest-user
       - name: MAILMAN_REST_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: mailman-core-test.axdd.s.uw.edu-shared-secrets
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
             key: mailman-rest-password
   postfix:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:ca80684"
@@ -306,11 +305,6 @@ sidecarContainers:
 #      - "-c"
 #      - 'mkdir -m 0700 ~/.ssh && echo "${JUMPHOST_ID_KEY}" > ~/.ssh/id_ecdsa && chmod 400 ~/.ssh/id_ecdsa && ssh ${JUMPHOST_ID}@${JUMPHOST_HOSTNAME} -o StrictHostKeyChecking=no -N -L 127.0.0.1:25:${SMTP_SERVER}:25'
 
-nfsServer:
-  enabled: true
-  name: archive-index
-  capacity: 10Gi
-
 podVolumes:
   var-mailman:
     volume:
@@ -321,7 +315,7 @@ podVolumes:
         storageSize: 10Gi
     mount:
       mountPath: /app/mailman/var
-    containers: [ base, postfix, hyperkitty-cron, mailman-backup ]
+    containers: [ base, postfix, hyperkitty-cron, mailman-backup, 01-share-drive-permissions ]
   var-spool-postfix:
     volume:
       claimTemplate:
@@ -334,11 +328,15 @@ podVolumes:
     containers: [ base, postfix ]
   opt-mailman-web-data:
     volume:
-      persistentVolumeClaim:
-        claimName: mailman-core-prod-test-nfs-server-archive-index
+      claimTemplate:
+        accessModes:
+          - ReadWriteMany
+        storageClassName: basic-hdd-rwx
+        storageSize: 100Gi
     mount:
       mountPath: /opt/mailman-web-data
-    containers: [ base, hyperkitty-cron, share-drive-permissions ]
+      subPath: "01"
+    containers: [ base, hyperkitty-cron, 01-share-drive-permissions ]
   postfix-config:
     volume:
       configMap:
@@ -578,7 +576,7 @@ configmaps:
   mailman-hyperkitty-tpl:
     mailman-hyperkitty.tpl: |
       [general]
-      base_url: http://mailman-web-prod-test/hyperkitty/
+      base_url: http://mailman-web-01/hyperkitty/
       api_key: ${HYPERKITTY_API_KEY}
   gunicorn-tpl:
     gunicorn.tpl: |
