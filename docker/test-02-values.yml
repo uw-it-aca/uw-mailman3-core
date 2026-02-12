@@ -228,7 +228,7 @@ sidecarContainers:
             name: mailman-core-02-test.axdd.s.uw.edu-shared-secrets
             key: mailman-rest-password
   postfix:
-    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:ca80684"
+    image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-postfix:1492018"
     resources:
       limits:
         cpu: 500m
