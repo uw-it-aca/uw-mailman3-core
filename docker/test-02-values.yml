@@ -69,8 +69,7 @@ gcsCredentials:
 metrics:
   enabled: true
   serviceMonitor:
-    enabled: true
-    port: metrics
+    enabled: false
 certs:
   mounted: true
   certPath: /certs/mailman-core-test.axdd.s.uw.edu.cert
