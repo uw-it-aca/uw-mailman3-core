@@ -47,13 +47,10 @@ externalService:
 repo: mailman-core
 repoIdentifier: "01"
 instance: prod
-namespace:
-  enabled: true
-  name: mailman-prod
 resources:
   limits:
     cpu: 1500m
-    memory: 2.5Gi
+    memory: 3Gi
   requests:
     cpu: 500m
     memory: 1Gi
@@ -257,6 +254,8 @@ sidecarContainers:
 
 podVolumes:
   var-mailman:
+    # override drived name to mount legacy pvc
+    claimName: mailman-core-prod-prod-pvc-var-mailman
     volume:
       claimTemplate:
         accessModes:
@@ -267,6 +266,8 @@ podVolumes:
       mountPath: /app/mailman/var
     containers: [ base, postfix, hyperkitty-cron, mailman-backup, 01-share-drive-permissions ]
   var-spool-postfix:
+    # override drived name to mount legacy pvc
+    claimName: mailman-core-prod-prod-pvc-var-spool-postfix
     volume:
       claimTemplate:
         accessModes:
@@ -375,6 +376,8 @@ configmaps:
       append_dot_mydomain = no
       readme_directory = no
       compatibility_level = 2
+      smtpd_client_connection_count_limit = 10
+      smtpd_client_connection_rate_limit = 5
       smtpd_tls_cert_file = /certs/mailman-core-prod.axdd.s.uw.edu.cert
       smtpd_tls_key_file = /certs/mailman-core-prod.axdd.s.uw.edu.key
       smtpd_use_tls = yes
@@ -413,7 +416,7 @@ configmaps:
       # service type  private unpriv  chroot  wakeup  maxproc command + args
       #               (yes)   (yes)   (no)    (never) (100)
       # ==========================================================================
-      smtp      inet  n       -       n       -       -       smtpd
+      smtp      inet  n       -       n       -       10       smtpd
       pickup    unix  n       -       n       60      1       pickup
       cleanup   unix  n       -       n       -       0       cleanup
       qmgr      unix  n       -       n       300     1       qmgr
