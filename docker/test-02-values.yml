@@ -24,6 +24,7 @@ services:
         targetPort: 25
         protocol: TCP
         name: smtp
+    externalTrafficPolicy: Local
   ClusterIP:
     ports:
       - port: 80
