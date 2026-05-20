@@ -30,6 +30,7 @@ services:
         protocol: TCP
         name: smtp
     externalTrafficPolicy: Local
+    loadBalancerIPAddresses: mailman-core-list03
 securityPolicy:
   enabled: false
 readiness:
