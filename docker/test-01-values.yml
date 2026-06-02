@@ -25,7 +25,7 @@ services:
         protocol: TCP
         name: smtp
     externalTrafficPolicy: Local
-    loadBalancerIPAddresses: mailman-core-test01
+    loadBalancerIP: "136.118.89.169"
   ClusterIP:
     ports:
       - port: 80
