@@ -389,6 +389,14 @@ podVolumes:
       mountPath: /config/master.tpl
       subPath: master.tpl
     containers: [ postfix ]
+  postfix-ldap-alias-config:
+    volume:
+      configMap:
+        name: postfix-ldap-alias-tpl
+    mount:
+      mountPath: /etc/postfix/ldap-aliases.cf
+      subPath: ldap-aliases.cf
+    containers: [ postfix ]
   mailman-config-template:
     volume:
       configMap:
@@ -652,14 +660,6 @@ configmaps:
       # core crons
       0 9 * * * /app/mailman/bin/mailman notify > /dev/null
       0 12 * * * /app/mailman/bin/mailman digests --periodic > /dev/null
-  postfix-ldap-alias-config:
-    volume:
-      configMap:
-        name: postfix-ldap-alias-tpl
-    mount:
-      mountPath: /etc/postfix/ldap-aliases.cf
-      subPath: ldap-aliases.cf
-    containers: [ postfix ]
   postfix-ldap-alias-tpl:
     ldap-aliases.cf: |
       server_host = openldap
