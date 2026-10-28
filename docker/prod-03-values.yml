@@ -601,8 +601,8 @@ configmaps:
       host = localhost
       port = 389
       ssl = false
-      bind_dn = cn=admin,dc=uw,dc=edu
-      bind_pwd = P@ssw0rd
+      bind_dn = cn=LLDAP_LDAP_USER_DN,LLDAP_LDAP_BASE_DN
+      bind_pwd = LLDAP_LDAP_USER_PASS
 
       [sync]
       ; log file for this script, put blank if you don't use
@@ -665,7 +665,7 @@ configmaps:
       # core crons
       0 9 * * * /app/mailman/bin/mailman notify > /dev/null
       0 12 * * * /app/mailman/bin/mailman digests --periodic > /dev/null
-      0 * * * * /scripts/m3_ldap_sync.py --config /config/m3_ldap_sync.ini      
+      0 * * * * /scripts/m3_ldap_sync.py --config /config/m3_ldap_sync.ini
   postfix-ldap-alias-config:
     volume:
       configMap:
