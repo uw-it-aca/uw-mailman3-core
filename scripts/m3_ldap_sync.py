@@ -10,6 +10,7 @@ import sys
 import re
 import logging
 import traceback
+import argparse
 from pprint import pprint
 from mailmanclient import Client as Mailman3Client
 from colorlog import ColoredFormatter
@@ -300,11 +301,21 @@ class M3Sync(object):
 
 if __name__ == "__main__":
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    MAIN_CONF = os.path.join(BASE_DIR, 'config.ini')
+    parser = argparse.ArgumentParser(description='Sync LDAP groups to Mailman 3 lists.')
+    parser.add_argument(
+        '-c', '--config',
+        default=os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'config.ini'
+        ),
+        help='Path to the main config file.'
+    )
+    args = parser.parse_args()
+
+    MAIN_CONF = args.config
 
     if not os.path.isfile(MAIN_CONF):
-        logExit("main configuration not found")
+        raise SystemExit("main configuration not found: {0}".format(MAIN_CONF))
 
     parser = ConfigParser()
     parser.read(MAIN_CONF)

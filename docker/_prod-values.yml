@@ -332,6 +332,14 @@ podVolumes:
     mount:
       mountPath: /config/postfix-mailman.tpl
       subPath: postfix-mailman.tpl
+  mailman-m3_ldap_sync-config:
+    volume:
+      configMap:
+        name: m3_ldap_sync-config
+    mount:
+      mountPath: /config/m3_ldap_sync.ini
+      subPath: m3_ldap_sync.ini
+    containers: [ base ]
   mailman-backup-schedule:
     volume:
       configMap:
@@ -534,6 +542,59 @@ configmaps:
       [postfix]
       transport_file_type: regex
       postmap_command: true
+  m3_ldap_sync-config:
+    m3_ldap_sync.ini: |
+      ; mailman3 api auth
+      [mailman3]
+      host = localhost
+      port = 8001
+      user = restadmin
+      pwd = restpass
+
+      ; ldap auth
+      [ldap]
+      host = localhost
+      port = 389
+      ssl = false
+      bind_dn = cn=admin,dc=uw,dc=edu
+      bind_pwd = P@ssw0rd
+
+      [sync]
+      ; log file for this script, put blank if you don't use
+      log_file = /var/log/mailman3_ldapsync.log
+      ; default domain, will be named after the list. eg: kelompok@iomarmochtar.com
+      default_list_domain = uw.edu
+      ; replacing owner, subscriber and moderator email domain, leave blank if not used
+      replace_mail_domain = uw.edu
+      group_filter = (&(objectClass=group)(msExchEnableModeration=TRUE))
+      search_base = dc=uw,dc=edu
+      ; group member attribute from group filter result that will be used as list subscriber
+      subscriber_attr = member
+      ; <same as above but for list owner >
+      owner_attr = managedBy
+      ; <same as above but for list moderator >
+      moderator_attr = msExchModeratedByLink
+      ; member filter if result of subscriber or owner or moderator returned DN, this is used in AD
+      member_filter = (objectClass=person)
+      mail_attr = mail
+      ; name of list, if there is a space character then it will be replaced by dot (.) then lower cased
+      group_name_attr = cn
+      ; set this value to true for deleting the unmatch list in mailman
+      delete_rest_list = true
+      ; fill this with regex pattern for exclude list deletion, if delete_rest_list is enabled (true)
+      exclude_list_re =
+      ; list prefix that will be appended in front
+      list_prefix =
+
+      ; hooks is some python code that will be executed after sync process are done, all hooks must be put in hooks folder
+      ; script will run method main in hook file, see the example
+      [hooks]
+      ; <ALIAS> = <HOOK FILE>
+      ;example_hook = example
+
+      ; hook configuration that will be injected to hook main function as argument
+      ;[example_hook]
+      ;postmap_path = /usr/sbin/postmap
   mailman-backup-schedule:
     backup.cron: |
       10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
@@ -559,6 +620,7 @@ configmaps:
       # core crons
       0 9 * * * /app/mailman/bin/mailman notify > /dev/null
       0 12 * * * /app/mailman/bin/mailman digests --periodic > /dev/null
+      0 * * * * /scripts/m3_ldap_sync.py --config /config/m3_ldap_sync.ini
   postfix-ldap-alias-config:
     volume:
       configMap:
