@@ -14,7 +14,6 @@ import argparse
 from pprint import pprint
 from urllib.error import HTTPError
 from mailmanclient import Client as Mailman3Client
-from colorlog import ColoredFormatter
 from ldap3 import Server, Connection, ALL, ALL_ATTRIBUTES, BASE
 from configparser import ConfigParser
 
@@ -78,16 +77,8 @@ class M3Sync(object):
         """
         Initiate log console & file (if enabled)
         """
-        formatter = ColoredFormatter(
-            "%(yellow)s%(asctime)s %(reset)s- %(log_color)s%(levelname)-8s%(reset)s - %(blue)s%(message)s",
-            reset=True,
-            log_colors={
-                'DEBUG': 'cyan',
-                'INFO':	 'green',
-                'WARNING': 'yellow',
-                'ERROR': 'red',
-                'CRITICAL': 'blue',
-            }
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s'
         )
 
         log_lvl = logging.DEBUG
