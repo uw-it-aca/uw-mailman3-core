@@ -1,7 +1,9 @@
 mailman==3.3.9
 mailman-hyperkitty==1.2.1
+mailmanclient
 gunicorn==21.2.0
 psycopg2>=2.8,<2.9
 pylibmc
+ldap3
 Whoosh
 git+https://github.com/uw-it-aca/uw-mailman3-plugin@main#egg=uw-mailman3-plugin
