@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/app/mailman/bin/python3
 
 __author__ = ('Imam Omar Mochtar')
 __email__ = ('iomarmochtar@gmail.com',)
@@ -12,15 +12,11 @@ import logging
 import traceback
 import argparse
 from pprint import pprint
+from urllib.error import HTTPError
 from mailmanclient import Client as Mailman3Client
 from colorlog import ColoredFormatter
-from six.moves.urllib_error import HTTPError
 from ldap3 import Server, Connection, ALL, ALL_ATTRIBUTES, BASE
-try:
-    from ConfigParser import ConfigParser
-except ImportError:
-    # for python 3
-    from configparser import ConfigParser
+from configparser import ConfigParser
 
 
 class M3Sync(object):
