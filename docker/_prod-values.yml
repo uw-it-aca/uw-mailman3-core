@@ -332,10 +332,10 @@ podVolumes:
     mount:
       mountPath: /config/postfix-mailman.tpl
       subPath: postfix-mailman.tpl
-  mailman-m3_ldap_sync-config:
+  mailman-m3-ldap-sync-config:
     volume:
       configMap:
-        name: m3_ldap_sync-config
+        name: m3-ldap-sync-config
     mount:
       mountPath: /config/m3_ldap_sync.ini
       subPath: m3_ldap_sync.ini
@@ -542,7 +542,7 @@ configmaps:
       [postfix]
       transport_file_type: regex
       postmap_command: true
-  m3_ldap_sync-config:
+  m3-ldap-sync-config:
     m3_ldap_sync.ini: |
       ; mailman3 api auth
       [mailman3]
