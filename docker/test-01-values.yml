@@ -163,6 +163,56 @@ sidecarContainers:
       - >
         mkdir -p /opt/mailman-web-data/fulltext_index &&
         chown -R 1000:1000 /opt/mailman-web-data /app/mailman/var
+  openldap:
+    image: "ghcr.io/lldap/lldap:stable"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        export LLDAP_DATABASE_URL="postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
+        /app/lldap
+    ports:
+      - name: ldap
+        containerPort: 389
+        protocol: TCP
+      - name: ldap-admin
+        containerPort: 17170
+        protocol: TCP
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 25m
+        memory: 64Mi
+    environmentVariables:
+      - name: DATABASE_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-01-test.axdd.s.uw.edu-sql-secret
+            key: username
+      - name: DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-01-test.axdd.s.uw.edu-sql-secret
+            key: password
+      - name: DATABASE_HOSTNAME
+        value: mailman-core-01-db-test-service
+      - name: DATABASE_DB_NAME
+        value: mailman
+      - name: LLDAP_LDAP_BASE_DN
+        value: dc=uw,dc=edu
+      - name: LLDAP_LDAP_USER_DN
+        value: admin
+      - name: LLDAP_LDAP_USER_PASS
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
+            key: mailman-admin-password
+      - name: LLDAP_LDAP_PORT
+        value: "389"
+      - name: LLDAP_HTTP_PORT
+        value: "17170"
   metrics:
     image: "us-docker.pkg.dev/uwit-mci-axdd/containers/uw-mailman3-exporter:e6a240b"
     ports:
@@ -355,6 +405,14 @@ podVolumes:
       mountPath: /config/master.tpl
       subPath: master.tpl
     containers: [ postfix ]
+  postfix-ldap-alias-config:
+    volume:
+      configMap:
+        name: postfix-ldap-alias-tpl
+    mount:
+      mountPath: /etc/postfix/ldap-aliases.cf
+      subPath: ldap-aliases.cf
+    containers: [ postfix ]
   mailman-config-template:
     volume:
       configMap:
@@ -386,6 +444,14 @@ podVolumes:
     mount:
       mountPath: /config/postfix-mailman.tpl
       subPath: postfix-mailman.tpl
+  mailman-m3_ldap_sync-config:
+    volume:
+      configMap:
+        name: m3_ldap_sync-config
+    mount:
+      mountPath: /config/m3_ldap_sync.ini
+      subPath: m3_ldap_sync.ini
+    containers: [ base ]
   mailman-backup-schedule:
     volume:
       configMap:
@@ -439,7 +505,7 @@ configmaps:
       smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
       smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
       smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
-      alias_maps = hash:/etc/aliases
+      alias_maps = ldap:/etc/postfix/ldap-aliases.cf, hash:/etc/aliases
       alias_database = hash:/etc/aliases
       mydestination = $myhostname, $mydomain, localhost, localhost.localdomain
       mailbox_size_limit = 0
@@ -590,6 +656,59 @@ configmaps:
       [postfix]
       transport_file_type: regex
       postmap_command: true
+  m3_ldap_sync-config:
+    m3_ldap_sync.ini: |
+      ; mailman3 api auth
+      [mailman3]
+      host = localhost
+      port = 8001
+      user = restadmin
+      pwd = restpass
+
+      ; ldap auth
+      [ldap]
+      host = localhost
+      port = 389
+      ssl = false
+      bind_dn = cn=LLDAP_LDAP_USER_DN,LLDAP_LDAP_BASE_DN
+      bind_pwd = LLDAP_LDAP_USER_PASS
+
+      [sync]
+      ; log file for this script, put blank if you don't use
+      log_file = /var/log/mailman3_ldapsync.log
+      ; default domain, will be named after the list. eg: kelompok@iomarmochtar.com
+      default_list_domain = uw.edu
+      ; replacing owner, subscriber and moderator email domain, leave blank if not used
+      replace_mail_domain = uw.edu
+      group_filter = (&(objectClass=group)(msExchEnableModeration=TRUE))
+      search_base = dc=uw,dc=edu
+      ; group member attribute from group filter result that will be used as list subscriber
+      subscriber_attr = member
+      ; <same as above but for list owner >
+      owner_attr = managedBy
+      ; <same as above but for list moderator >
+      moderator_attr = msExchModeratedByLink
+      ; member filter if result of subscriber or owner or moderator returned DN, this is used in AD
+      member_filter = (objectClass=person)
+      mail_attr = mail
+      ; name of list, if there is a space character then it will be replaced by dot (.) then lower cased
+      group_name_attr = cn
+      ; set this value to true for deleting the unmatch list in mailman
+      delete_rest_list = true
+      ; fill this with regex pattern for exclude list deletion, if delete_rest_list is enabled (true)
+      exclude_list_re =
+      ; list prefix that will be appended in front
+      list_prefix =
+
+      ; hooks is some python code that will be executed after sync process are done, all hooks must be put in hooks folder
+      ; script will run method main in hook file, see the example
+      [hooks]
+      ; <ALIAS> = <HOOK FILE>
+      ;example_hook = example
+
+      ; hook configuration that will be injected to hook main function as argument
+      ;[example_hook]
+      ;postmap_path = /usr/sbin/postmap
   mailman-backup-schedule:
     backup.cron: |
       10 1 * * * /scripts/backup.sh 0 /app/mailman/var mailman-backups
@@ -618,3 +737,19 @@ configmaps:
       # core crons
       0 9 * * * /app/mailman/bin/mailman notify > /dev/null
       0 12 * * * /app/mailman/bin/mailman digests --periodic > /dev/null
+      0 * * * * /scripts/m3_ldap_sync.py --config /config/m3_ldap_sync.ini
+  postfix-ldap-alias-tpl:
+    ldap-aliases.cf: |
+      server_host = openldap
+      server_port = 389
+      start_tls = no
+      version = 3
+      bind = no
+      search_base = dc=uw,dc=edu
+      query_filter = (mail=%s)
+      result_attribute = mail
+      result_format = %s
+      scope = sub
+      timeout = 5
+      domain = uw.edu
+
