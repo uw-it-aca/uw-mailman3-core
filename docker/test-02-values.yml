@@ -152,12 +152,8 @@ sidecarContainers:
         chown -R 1000:1000 /opt/mailman-web-data /app/mailman/var
   openldap:
     image: "ghcr.io/lldap/lldap:stable"
-    command:
-      - /bin/sh
-      - -ec
-      - |
-        export LLDAP_DATABASE_URL="postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
-        /app/lldap run
+    command: ["/app/lldap"]
+    args: ["run"]
     ports:
       - name: ldap
         containerPort: 389
@@ -196,6 +192,8 @@ sidecarContainers:
           secretKeyRef:
             name: mailman-core-02-test.axdd.s.uw.edu-shared-secrets
             key: mailman-admin-password
+      - name: LLDAP_DATABASE_URL
+        value: "postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
       - name: LLDAP_LDAP_PORT
         value: "389"
       - name: LLDAP_HTTP_PORT
