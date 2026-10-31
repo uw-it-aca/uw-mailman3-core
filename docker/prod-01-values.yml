@@ -194,7 +194,7 @@ sidecarContainers:
       - name: DATABASE_HOSTNAME
         value: mailman-core-01-db-prod-service
       - name: DATABASE_DB_NAME
-        value: mailman
+        value: ldap
       - name: LLDAP_LDAP_BASE_DN
         value: dc=uw,dc=edu
       - name: LLDAP_LDAP_USER_DN
