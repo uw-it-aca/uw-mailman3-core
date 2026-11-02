@@ -123,6 +123,15 @@ externalSecrets:
       data:
         - name: credentials.json
           property: credentials.json
+    - name: mailman-core-01-test.axdd.s.uw.edu-lldap-secrets
+      externalKey: axdd/kv/data/mailman/core/test/lldap-secrets
+      data:
+        - name: lldap-user
+          property: lldap-user
+        - name: lldap-password
+          property: lldap-password
+        - name: lldap-jwt-secret
+          property: lldap-jwt-secret
     - name: mailman-core-01-test.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/test/ic-certs
       data:
@@ -195,18 +204,24 @@ sidecarContainers:
       - name: DATABASE_HOSTNAME
         value: mailman-core-01-db-test-service
       - name: DATABASE_DB_NAME
-        value: mailman
+        value: ldap
       - name: LLDAP_LDAP_BASE_DN
         value: dc=uw,dc=edu
       - name: LLDAP_LDAP_USER_DN
-        value: admin
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-01-prod.axdd.s.uw.edu-lldap-secrets
+            key: lldap-user
       - name: LLDAP_LDAP_USER_PASS
         valueFrom:
           secretKeyRef:
-            name: mailman-core-01-test.axdd.s.uw.edu-shared-secrets
-            key: mailman-admin-password
+            name: mailman-core-01-prod.axdd.s.uw.edu-lldap-secrets
+            key: lldap-password
       - name: LLDAP_JWT_SECRET
-        value: "H3rvLkJrCruyMvrrjlrrBjEfLrisr3Ti"
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-01-prod.axdd.s.uw.edu-lldap-secrets
+            key: lldap-jwt-secret
       - name: LLDAP_DATABASE_URL
         value: "postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOSTNAME}/${DATABASE_DB_NAME}"
       - name: LLDAP_LDAP_PORT
