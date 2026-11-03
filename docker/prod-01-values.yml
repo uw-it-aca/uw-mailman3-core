@@ -192,7 +192,7 @@ sidecarContainers:
             name: mailman-core-01-prod.axdd.s.uw.edu-sql-secret
             key: password
       - name: DATABASE_HOSTNAME
-        value: mailman-core-01-db-prod-service
+        value: mailman-core-01-db-prod-service.mailman-prod.svc.cluster.local
       - name: DATABASE_DB_NAME
         value: ldap
       - name: LLDAP_LDAP_BASE_DN
