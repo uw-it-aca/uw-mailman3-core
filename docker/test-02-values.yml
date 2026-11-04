@@ -189,7 +189,7 @@ sidecarContainers:
             name: mailman-core-02-test.axdd.s.uw.edu-sql-secret
             key: password
       - name: DATABASE_HOSTNAME
-        value: mailman-core-02-db-test-service.mailman-test.svc.cluster.local
+        value: 172.18.1.64
       - name: DATABASE_DB_NAME
         value: ldap
       - name: LLDAP_LDAP_BASE_DN
