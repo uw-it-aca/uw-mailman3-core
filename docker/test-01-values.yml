@@ -231,7 +231,7 @@ sidecarContainers:
           secretKeyRef:
             name: mailman-core-01-test.axdd.s.uw.edu-lldap-secrets
             key: lldap-jwt-secret
-      - name: LLDAP_RANDOM_SEED
+      - name: LLDAP_KEY_SEED
         valueFrom:
           secretKeyRef:
             name: mailman-core-01-test.axdd.s.uw.edu-lldap-secrets
