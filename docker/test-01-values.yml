@@ -205,6 +205,8 @@ sidecarContainers:
         value: mailman-core-01-db-test-service.mailman-test.svc.cluster.local
       - name: DATABASE_DB_NAME
         value: ldap
+      - name: LLDAP_VERBOSE
+        value: true
       - name: LLDAP_LDAP_BASE_DN
         value: dc=uw,dc=edu
       - name: LLDAP_LDAP_USER_DN
