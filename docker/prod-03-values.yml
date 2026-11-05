@@ -116,6 +116,8 @@ externalSecrets:
           property: lldap-password
         - name: lldap-jwt-secret
           property: lldap-jwt-secret
+        - name: lldap-random-seed
+          property: lldap-random-seed
     - name: mailman-core-03-prod.axdd.s.uw.edu-certs
       externalKey: axdd/kv/data/mailman/core/prod/ic-certs
       data:
@@ -212,6 +214,11 @@ sidecarContainers:
           secretKeyRef:
             name: mailman-core-03-prod.axdd.s.uw.edu-lldap-secrets
             key: lldap-jwt-secret
+      - name: LLDAP_RANDOM_SEED
+        valueFrom:
+          secretKeyRef:
+            name: mailman-core-03-prod.axdd.s.uw.edu-lldap-secrets
+            key: lldap-random-seed
       - name: LLDAP_LDAP_PORT
         value: "389"
       - name: LLDAP_HTTP_PORT
