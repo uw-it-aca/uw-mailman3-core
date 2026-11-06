@@ -219,7 +219,7 @@ sidecarContainers:
             name: mailman-core-prod.axdd.s.uw.edu-lldap-secrets
             key: lldap-random-seed
       - name: LLDAP_FORCE_UPDATE_PRIVATE_KEY
-        value: "true"
+        value: "false"
       - name: LLDAP_FORCE_LDAP_USER_PASS_RESET
         value: always
       - name: LLDAP_LDAP_PORT
