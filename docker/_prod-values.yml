@@ -590,7 +590,7 @@ configmaps:
 
       [sync]
       ; log file for this script, put blank if you don't use
-      log_file = /var/log/mailman3_ldapsync.log
+      log_file =
       ; default domain, will be named after the list. eg: kelompok@iomarmochtar.com
       default_list_domain = uw.edu
       ; replacing owner, subscriber and moderator email domain, leave blank if not used
