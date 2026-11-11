@@ -621,17 +621,17 @@ configmaps:
       ; mailman3 api auth
       [mailman3]
       host = localhost
-      port = 8001
-      user = restadmin
-      pwd = restpass
+      port = 8000
+      user = ${MAILMAN_ADMIN_USER}
+      pwd = ${MAILMAN_ADMIN_PASSWORD}
 
       ; ldap auth
       [ldap]
       host = localhost
       port = 389
       ssl = false
-      bind_dn = cn=LLDAP_LDAP_USER_DN,LLDAP_LDAP_BASE_DN
-      bind_pwd = LLDAP_LDAP_USER_PASS
+      bind_dn = cn=${LLDAP_LDAP_USER_DN},${LLDAP_LDAP_BASE_DN}
+      bind_pwd = ${LLDAP_LDAP_USER_PASS}
 
       [sync]
       ; log file for this script, put blank if you don't use
