@@ -77,6 +77,8 @@ certs:
 environmentVariables:
   - name: ENV
     value: prod
+  - name: LLDAP_LDAP_BASE_DN
+    value: dc=uw,dc=edu
 externalSecrets:
   enabled: true
   secrets:
@@ -151,6 +153,14 @@ environmentVariablesSecrets:
     name: SMTP_HOST
     secretName: mailman-core-01-prod.axdd.s.uw.edu-secrets
     secretKey: smtp-host
+  lldapUser:
+    name: LLDAP_LDAP_USER_DN
+    secretName: mailman-core-01-prod.axdd.s.uw.edu-lldap-secrets
+    secretKey: lldap-user
+  lldapPassword:
+    name: LLDAP_LDAP_USER_PASS
+    secretName: mailman-core-01-prod.axdd.s.uw.edu-lldap-secrets
+    secretKey: lldap-password
 
 sidecarContainers:
   '01-share-drive-permissions':
