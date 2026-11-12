@@ -305,7 +305,9 @@ if __name__ == "__main__":
         raise SystemExit("main configuration not found: {0}".format(MAIN_CONF))
 
     parser = ConfigParser()
-    parser.read(MAIN_CONF)
+    with open(MAIN_CONF) as conf_file:
+        # substitute $VAR and ${VAR} with environment values
+        parser.read_string(os.path.expandvars(conf_file.read()), MAIN_CONF)
 
     M3Sync(
         config=parser
